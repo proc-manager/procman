@@ -32,6 +32,9 @@ func BuildImage(name string, tag string, context_dir string) (*Image, *ImageErro
 		_logger.Error().Msgf("error building image: %v", err)
 		return nil, &ImageError{Message: fmt.Sprintf("error building: %v", err)}
 	}
+	if res == nil {
+		return nil, nil
+	}
 
 	img := &Image{
 		Id:      res.Id,
@@ -50,6 +53,9 @@ func ListImages() (*[]*Image, *ImageListError) {
 	res, err := images.ListImages()
 	if err != nil {
 		_logger.Error().Msgf("error listing images: %v", err)
+		return &[]*Image{}, nil
+	}
+	if res == nil {
 		return &[]*Image{}, nil
 	}
 
