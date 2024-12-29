@@ -15,7 +15,7 @@ func BuildImage(name string, tag string, context_dir string) (*Image, *ImageErro
 	if imgfind_err != nil {
 		return nil, nil
 	}
-	if imgfind != nil {
+	if imgfind == nil {
 		return nil, nil
 	}
 
