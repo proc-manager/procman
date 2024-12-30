@@ -30,5 +30,14 @@ func StartProcess(proc ProcessCreate) (*Process, *common.ProcStartErr) {
 		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error starting process: %v", errProcWrite)}
 	}
 
+	// test code
+	process.Network = ProcessNetwork{
+		Ports: []PortMapping{
+			{HostPort: 8020, ProcPort: 3000},
+			{HostPort: 8000, ProcPort: 2000},
+			{HostPort: 8080, ProcPort: 4000},
+		},
+	}
+
 	return process, nil
 }
