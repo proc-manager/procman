@@ -18,12 +18,7 @@ func createDirIfNotExists(dirpath string) {
 
 func getAllProcDir() string {
 	dir := "/var/lib/procman/proc"
-	createDirIfNotExists(dir)
-	return dir
-}
-
-func getProcessContextDir(img_id string) string {
-	dir := fmt.Sprintf("%v/%v/rootfs", getAllProcDir(), img_id)
+	os.MkdirAll(dir, 0755)
 	return dir
 }
 
@@ -32,7 +27,7 @@ Do not confuse process_id with process_pid
 */
 func getProcessDir(process_id string) string {
 	dir := fmt.Sprintf("%v/%v", getAllProcDir(), process_id)
-	createDirIfNotExists(dir)
+	os.MkdirAll(dir, 0755)
 	return dir
 }
 
