@@ -129,7 +129,7 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 key = strdup((char*)event.data.scalar.value);
                 printf("KEY = %s\n", key);
             } else {
-                if (strcmp(key, "Id") == 0) {
+                if (strcmp(key, "id") == 0) {
                     image->Id = strdup((char*)event.data.scalar.value);
                     printf("image Id: %s\n", image->Id);
                 } else if (strcmp(key, "name") == 0) {
@@ -148,11 +148,10 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                     image->Created = strdup((char*)event.data.scalar.value);
                     printf("image Created: %s\n", image->Created);
                 }
+                free(key);
+                key = NULL;
             }
-            free(key);
-            key = NULL;
         }
-
         yaml_event_delete(&event);
     }
 }
