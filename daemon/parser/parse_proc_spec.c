@@ -48,7 +48,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
     char* key = NULL;
 
     while(1) {
-        yaml_parser_scan(&parser, &event);
+        yaml_parser_parse(&parser, &event);
         if(event.type == YAML_STREAM_END_EVENT) {
             break;
         }
