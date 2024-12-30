@@ -25,11 +25,6 @@ func StartProcess(proc ProcessCreate) (*Process, *common.ProcStartErr) {
 	}
 	process.Job = *job
 
-	procConfYaml := getProcConfPath(process.Id)
-	if errProcWrite := WriteProcessToYaml(*process, procConfYaml); errProcWrite != nil {
-		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error starting process: %v", errProcWrite)}
-	}
-
 	// test code
 	process.Network = ProcessNetwork{
 		Ports: []PortMapping{
@@ -37,6 +32,11 @@ func StartProcess(proc ProcessCreate) (*Process, *common.ProcStartErr) {
 			{HostPort: 8000, ProcPort: 2000},
 			{HostPort: 8080, ProcPort: 4000},
 		},
+	}
+
+	procConfYaml := getProcConfPath(process.Id)
+	if errProcWrite := WriteProcessToYaml(*process, procConfYaml); errProcWrite != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error starting process: %v", errProcWrite)}
 	}
 
 	return process, nil
