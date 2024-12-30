@@ -8,14 +8,6 @@ import (
 	"github.com/rutu-sh/procman/internal/common"
 )
 
-func createDirIfNotExists(dirpath string) {
-	if _, err := os.Stat(dirpath); err != nil {
-		if os.IsNotExist(err) {
-			os.MkdirAll(dirpath, 0755)
-		}
-	}
-}
-
 func getAllProcDir() string {
 	dir := "/var/lib/procman/proc"
 	os.MkdirAll(dir, 0755)

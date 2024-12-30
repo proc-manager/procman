@@ -31,7 +31,7 @@ func BuildProcessContext(name string, image_id string, image_name string, image_
 
 	commands := [][]string{
 		{"cp", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), proc.ContextDir},
-		{"tar", "-xf", fmt.Sprintf("%v/img.tar.gz", proc.ContextDir)},
+		{"tar", "-xf", fmt.Sprintf("%v/img.tar.gz", proc.ContextDir), "-C", proc.ContextDir},
 		{"rm", fmt.Sprintf("%v/img.tar.gz", proc.ContextDir)},
 	}
 	for _, cmd := range commands {
