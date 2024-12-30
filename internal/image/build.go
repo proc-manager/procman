@@ -179,7 +179,7 @@ func packageImage(img *Image) *common.ImageBuildErr {
 		_logger.Error().Msgf("error creating the imgpath dir: %v", err)
 		return &common.ImageBuildErr{Code: 500, Message: fmt.Sprintf("error creating imgpath: %v", err)}
 	}
-	cmd := []string{"tar", "-czf", img.ImgPath + "/img.tar.gz", img.ContextTempDir}
+	cmd := []string{"tar", "-czf", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), "-C", img.ContextTempDir}
 	return runCmd([]string{}, cmd[0], cmd[1:]...)
 }
 
