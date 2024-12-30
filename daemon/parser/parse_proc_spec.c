@@ -7,12 +7,12 @@
 
 void print_parsed_image(struct Image image){
     printf("-------Image-----\n");
-    printf("%s", image.Id);
-    printf("%s", image.Name);
-    printf("%s", image.ContextTempDir);
-    printf("%s", image.ImgPath);
-    printf("%s", image.Tag);
-    printf("%s", image.Created);
+    printf("%s\n", image.Id);
+    printf("%s\n", image.Name);
+    printf("%s\n", image.ContextTempDir);
+    printf("%s\n", image.ImgPath);
+    printf("%s\n", image.Tag);
+    printf("%s\n", image.Created);
     printf("-------Image-----\n");
 }
 
@@ -95,8 +95,8 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->ContextDir = strdup((char*)event.data.scalar.value);
                 } else if (strcmp(key, "image") == 0) {
                     struct Image* image = calloc(1, sizeof(struct Image));
-                    process->Image = image;
                     parse_image(&parser, image);
+                    process->Image = image;
                 }
                 free(key);
                 key = NULL; 
