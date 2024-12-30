@@ -9,6 +9,7 @@ void print_parsed_process(struct Process process){
     printf("Id = %s\n", process.Id);
     printf("Name = %s\n", process.Name);
     printf("Pid = %d\n", process.Pid);
+    print_parsed_image(*process.Image);
 }
 
 void print_parsed_image(struct Image image){
@@ -94,6 +95,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->ContextDir = strdup((char*)event.data.scalar.value);
                 } else if (strcmp(key, "image") == 0) {
                     struct Image* image = calloc(1, sizeof(struct Image));
+                    process->Image = image;
                     parse_image(&parser, image);
                 }
                 free(key);
