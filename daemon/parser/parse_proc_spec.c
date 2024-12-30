@@ -129,6 +129,7 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
             if (key == NULL) {
                 key = strdup((char*)event.data.scalar.value);
                 printf("KEY = %s\n", key);
+                continue;
             } else {
                 if (strcmp(key, "id") == 0) {
                     image->Id = strdup((char*)event.data.scalar.value);
