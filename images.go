@@ -15,8 +15,15 @@ func BuildImage(name string, tag string, context_dir string) (*Image, *ImageErro
 	if imgfind_err != nil {
 		return nil, nil
 	}
-	if imgfind == nil {
-		return nil, nil
+	if imgfind != nil {
+		img := &Image{
+			Id:      imgfind.Id,
+			Name:    imgfind.Name,
+			ImgPath: imgfind.ImgPath,
+			Tag:     imgfind.Tag,
+			Created: imgfind.Created,
+		}
+		return img, &ImageError{Message: "image already exists"}
 	}
 
 	_logger.Info().Msgf("building image %v:%v using context dir %v", name, tag, context_dir)

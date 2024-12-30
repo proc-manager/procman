@@ -9,7 +9,13 @@ import (
 )
 
 func getParentImgDir() string {
-	return "/var/lib/procman/img"
+	dir := "/var/lib/procman/img"
+	if _, err := os.Stat(dir); err != nil {
+		if os.IsNotExist(err) {
+			os.MkdirAll(dir, 0755)
+		}
+	}
+	return dir
 }
 
 func getImageContextDir(img_id string) string {

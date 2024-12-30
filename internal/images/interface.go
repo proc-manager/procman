@@ -60,8 +60,6 @@ func ListImages() (*[]*Image, *common.ImageListErr) {
 
 	_logger := common.GetLogger()
 
-	_logger.Debug().Msgf("listing images")
-
 	img_dir := getParentImgDir()
 
 	images := []*Image{}
