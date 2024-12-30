@@ -2,12 +2,21 @@ package process
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/google/uuid"
 	"github.com/rutu-sh/procman/internal/common"
 	"github.com/rutu-sh/procman/internal/image"
 )
+
+func run(command []string) *common.ProcStartErr {
+	err := runCmd([]string{}, command[0], command[1:]...)
+	if err != nil {
+		return &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error running command image: %v", err)}
+	}
+	return nil
+}
 
 func BuildProcessContext(name string, image_id string, image_name string, image_tag string) (*Process, *common.ProcStartErr) {
 	_logger := common.GetLogger()
@@ -29,16 +38,17 @@ func BuildProcessContext(name string, image_id string, image_name string, image_
 		ContextDir: procDir,
 	}
 
-	commands := [][]string{
-		{"cp", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), proc.ContextDir},
-		{"tar", "-xf", fmt.Sprintf("%v/img.tar.gz", proc.ContextDir), "-C", proc.ContextDir},
-		{"rm", fmt.Sprintf("%v/img.tar.gz", proc.ContextDir)},
+	run([]string{"cp", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), proc.ContextDir})
+
+	wd, _ := os.Getwd()
+	if errchdir := os.Chdir(proc.ContextDir); errchdir != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error changing dir: %v", err)}
 	}
-	for _, cmd := range commands {
-		if err := runCmd([]string{}, cmd[0], cmd[1:]...); err != nil {
-			_logger.Error().Msgf("error running command: %v", err)
-			return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error running command image: %v", err)}
-		}
+	run([]string{"tar", "-xf", "img.tar.gz"})
+	run([]string{"rm", "img.tar.gz"})
+	if errchdir := os.Chdir(wd); errchdir != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error changing dir: %v", err)}
 	}
+
 	return proc, nil
 }

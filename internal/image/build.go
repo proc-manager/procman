@@ -179,8 +179,12 @@ func packageImage(img *Image) *common.ImageBuildErr {
 		_logger.Error().Msgf("error creating the imgpath dir: %v", err)
 		return &common.ImageBuildErr{Code: 500, Message: fmt.Sprintf("error creating imgpath: %v", err)}
 	}
-	cmd := []string{"tar", "-czf", "img.tar.gz", "-C", img.ContextTempDir}
-	return runCmd([]string{}, cmd[0], cmd[1:]...)
+	wd, _ := os.Getwd()
+	os.Chdir(img.ImgPath)
+	cmd := []string{"tar", "-czf", "img.tar.gz", "rootfs"}
+	err_run := runCmd([]string{}, cmd[0], cmd[1:]...)
+	os.Chdir(wd)
+	return err_run
 }
 
 func deleteImageContext(img *Image) *common.ImageBuildErr {
