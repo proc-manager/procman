@@ -94,7 +94,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->ContextDir = strdup((char*)event.data.scalar.value);
                 } else if (strcmp(key, "image") == 0) {
                     struct Image* image = calloc(1, sizeof(struct Image));
-                    parse_process_yaml(&parser, image);
+                    parse_image(&parser, image);
                 }
                 free(key);
                 key = NULL; 
