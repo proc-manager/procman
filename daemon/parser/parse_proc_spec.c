@@ -127,24 +127,31 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
         if (event.type == YAML_SCALAR_EVENT) {
             if (key == NULL) {
                 key = strdup((char*)event.data.scalar.value);
-                continue;
+                printf("KEY = %s\n", key);
             } else {
                 if (strcmp(key, "Id") == 0) {
                     image->Id = strdup((char*)event.data.scalar.value);
+                    printf("image Id: %s\n", image->Id);
                 } else if (strcmp(key, "name") == 0) {
                     image->Name = strdup((char*)event.data.scalar.value);
+                    printf("image Name: %s\n", image->Name);
                 } else if (strcmp(key, "context_temp_dir") == 0) {
                     image->ContextTempDir = strdup((char*)event.data.scalar.value);
+                    printf("image ContextTempDir: %s\n", image->ContextTempDir);
                 } else if (strcmp(key, "img_path") == 0) {
                     image->ImgPath = strdup((char*)event.data.scalar.value);
+                    printf("image ImgPath: %s\n", image->ImgPath);
                 } else if (strcmp(key, "tag") == 0) {
                     image->Tag = strdup((char*)event.data.scalar.value);
+                    printf("image Tag: %s\n", image->Tag);
                 } else if (strcmp(key, "created") == 0) {
                     image->Created = strdup((char*)event.data.scalar.value);
+                    printf("image Created: %s\n", image->Created);
                 }
+                free(key);
+                key = NULL;
             }
-            free(key);
-            key = NULL;
+
         }
         yaml_event_delete(&event);
     }
