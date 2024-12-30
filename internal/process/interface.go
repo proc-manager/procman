@@ -15,7 +15,7 @@ func BuildProcessContext(name string, image_id string, image_name string, image_
 	_logger.Info().Msgf("starting process with params (%v, %v, %v, %v)", name, image_id, image_name, image_tag)
 
 	img, err := image.GetImage(image_id, image_name, image_tag)
-	if err != nil {
+	if img == nil || err != nil {
 		_logger.Error().Msgf("error reading image: %v", err)
 		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error reading image: %v", err)}
 	}
