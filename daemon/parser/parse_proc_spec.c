@@ -148,6 +148,8 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 } else if (strcmp(key, "created") == 0) {
                     image->Created = strdup((char*)event.data.scalar.value);
                     printf("image Created: %s\n", image->Created);
+                } else {
+                    printf("default: %s\n", strdup((char*)event.data.scalar.value));
                 }
                 free(key);
                 key = NULL;
