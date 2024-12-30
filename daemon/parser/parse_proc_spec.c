@@ -120,9 +120,6 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
             break;
         }
 
-        printf("proc img, event val: %s", (char*)event.data.scalar.value);
-        yaml_event_delete(&event);
-
         if (event.type == YAML_MAPPING_END_EVENT) {
             break;
         }
