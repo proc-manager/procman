@@ -1,9 +1,13 @@
 package main
 
 import (
+	"os"
+
 	"github.com/rutu-sh/procman"
 )
 
 func main() {
-	procman.BuildProcessContext("test-proc", "", "test1", "v0.0.1")
+	tag := os.Args[1]
+	procman.BuildImage("test-img", tag, "./alpine-basic")
+	procman.BuildProcessContext("test-proc", "", "test-img", tag)
 }
