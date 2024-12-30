@@ -75,7 +75,7 @@ func run(command []string) *common.ProcStartErr {
 
 func parseProcJob(process *Process) (*image.ImageJob, *common.ProcStartErr) {
 	_logger := common.GetLogger()
-	jobYamlFile := fmt.Sprintf("%v/%v/job.yaml", getProcConfDir(), getProcRootFS(process.Id))
+	jobYamlFile := fmt.Sprintf("%v/%v/job.yaml", getProcRootFS(process.Id), getProcConfDir())
 
 	_logger.Info().Msgf("parsing job yaml at: %v", jobYamlFile)
 	if _, err := os.Stat(jobYamlFile); err != nil {
