@@ -82,7 +82,7 @@ func performRun(img *Image, step *ImageBuildStep) *common.ImageBuildErr {
 			return &common.ImageBuildErr{Code: 500, Message: fmt.Sprintf("error changing root: %v", err)}
 		}
 		err2 := runCmd(childEnv, step.Command[0], step.Command[1:]...)
-		if err2 != nil {
+		if err2 == nil {
 			os.Exit(0)
 		}
 		os.Exit(1)
