@@ -1,3 +1,5 @@
+#include<stdlib.h>
+
 #include "parser/parse_proc_spec.h"
 
 int main() {
