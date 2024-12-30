@@ -77,13 +77,13 @@ void parse_process_yaml(char* filepath, struct Process* process) {
     while(1) {
         yaml_parser_parse(&parser, &event);
         if(event.type == YAML_STREAM_END_EVENT) {
+            yaml_event_delete(&event);
             break;
         }
 
         if (event.type == YAML_SCALAR_EVENT) {
             if (key == NULL) {
                 key = strdup((char*)event.data.scalar.value);
-                continue;
             } else {
                 if(strcmp(key, "id") == 0) {
                     process->Id = strdup((char*)event.data.scalar.value);
