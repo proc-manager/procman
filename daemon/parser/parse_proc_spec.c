@@ -5,13 +5,6 @@
 #include "parse_proc_spec.h"
 
 
-void print_parsed_process(struct Process process){
-    printf("Id = %s\n", process.Id);
-    printf("Name = %s\n", process.Name);
-    printf("Pid = %d\n", process.Pid);
-    print_parsed_image(*process.Image);
-}
-
 void print_parsed_image(struct Image image){
     printf("-------Image-----\n");
     printf("%s", image.Id);
@@ -21,6 +14,13 @@ void print_parsed_image(struct Image image){
     printf("%s", image.Tag);
     printf("%s", image.Created);
     printf("-------Image-----\n");
+}
+
+void print_parsed_process(struct Process process){
+    printf("Id = %s\n", process.Id);
+    printf("Name = %s\n", process.Name);
+    printf("Pid = %d\n", process.Pid);
+    print_parsed_image(*process.Image);
 }
 
 void free_image(struct Image* image) {
