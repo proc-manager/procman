@@ -14,7 +14,7 @@ type Process struct {
 	Image      image.Image    `yaml:"image"`
 	Job        image.ImageJob `yaml:"job"`
 	Env        ProcessEnv     `yaml:"env"`
-	Network    []PortMapping  `yaml:"network"`
+	Network    ProcessNetwork `yaml:"network,omitempty"`
 }
 
 type ProcessCreateImage struct {
@@ -31,4 +31,8 @@ type ProcessCreate struct {
 type PortMapping struct {
 	HostPort uint `yaml:"hostPort"`
 	ProcPort uint `yaml:"procPort"`
+}
+
+type ProcessNetwork struct {
+	Ports []PortMapping `yaml:"ports,omitempty"`
 }

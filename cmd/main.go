@@ -9,5 +9,6 @@ import (
 func main() {
 	tag := os.Args[1]
 	procman.BuildImage("test-img", tag, "./alpine-basic")
-	procman.BuildProcessContext("test-proc", "", "test-img", tag)
+	env := make(map[string]string)
+	procman.StartProcess("test-proc", "test-img", tag, env)
 }
