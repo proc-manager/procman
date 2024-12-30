@@ -114,6 +114,9 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
     yaml_event_t event;
     char* key = NULL;
 
+    printf("proc img, event val: %s", (char*)event.data.scalar.value);
+    yaml_event_delete(&event);
+
     while(1) {
         if (!yaml_parser_parse(parser, &event)) {
             fprintf(stderr, "parser error: %d\n", parser->error);
