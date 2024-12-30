@@ -22,7 +22,6 @@ type ImageBuildStep struct {
 
 type ImageJob struct {
 	Name    string   `yaml:"name"`
-	Type    string   `yaml:"type"`
 	Command []string `yaml:"command"`
 }
 

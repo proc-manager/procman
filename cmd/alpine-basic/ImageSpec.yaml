@@ -9,5 +9,4 @@ steps:
     command: ["sh", "-c", "echo 'Hello, World!' > /home/src/hello.txt"]
 job:
   name: run-shell
-  type: shell
   command: ["sh", "-i"]

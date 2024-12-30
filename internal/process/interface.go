@@ -38,14 +38,23 @@ func BuildProcessContext(name string, image_id string, image_name string, image_
 		ContextDir: procDir,
 	}
 
-	run([]string{"cp", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), proc.ContextDir})
+	if errRun := run([]string{"cp", fmt.Sprintf("%v/img.tar.gz", img.ImgPath), proc.ContextDir}); errRun != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error copying: %v", err)}
+	}
 
-	wd, _ := os.Getwd()
+	wd, errGetWd := os.Getwd()
+	if errGetWd != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error getting wd: %v", err)}
+	}
 	if errchdir := os.Chdir(proc.ContextDir); errchdir != nil {
 		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error changing dir: %v", err)}
 	}
-	run([]string{"tar", "-xf", "img.tar.gz"})
-	run([]string{"rm", "img.tar.gz"})
+	if errRun := run([]string{"tar", "-xf", "img.tar.gz"}); errRun != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error unarchiving: %v", err)}
+	}
+	if errRun := run([]string{"rm", "img.tar.gz"}); errRun != nil {
+		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error removing: %v", err)}
+	}
 	if errchdir := os.Chdir(wd); errchdir != nil {
 		return nil, &common.ProcStartErr{Code: 500, Message: fmt.Sprintf("error changing dir: %v", err)}
 	}
