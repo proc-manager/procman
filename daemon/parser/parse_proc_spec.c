@@ -95,7 +95,6 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->ContextDir = strdup((char*)event.data.scalar.value);
                 } else if (strcmp(key, "image") == 0) {
                     struct Image* image = calloc(1, sizeof(struct Image));
-                    yaml_event_delete(&event);
                     parse_image(&parser, image);
                     process->Image = image;
                 }
