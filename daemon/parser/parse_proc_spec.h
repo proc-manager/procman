@@ -1,8 +1,7 @@
-/*
-    Process specification yaml
-*/
+#ifndef PARSE_PROC_SPEC_H
+#define PARSE_PROC_SPEC_H
 
-#include<sys/types.h>
+#include <sys/types.h>
 
 struct Env {
     char* Key;
@@ -19,17 +18,41 @@ struct Image {
 };
 
 struct PortMapping {
-    unsigned short HostPort;
-    unsigned short ProcPort;
+    char* HostPort;
+    char* ContainerPort;
+};
+
+struct ProcessCommand{
+    char* command; 
+    char** args; 
+    int argc;
+};
+
+struct ProcessJob {
+    char* Name;
+    char** Command;
+};
+
+struct ProcessNetwork {
+    struct PortMapping** ports;
 };
 
 struct Process {
     char* Id;
     char* Name;
-    pit_t Pid = 0;
+    int Pid;
     char* ContextDir;
     struct Image* Image;
-    struct Env* Env;
-    struct PortMapping** Network; 
+    struct ProcessJob* Job;
+    struct Env** Env;
+    struct ProcessNetwork* Network;
 };
 
+void parse_process_yaml(char* filepath, struct Process* process);
+// void parse_image(yaml_parser_t* parser, struct Image* image);
+// void parse_job_command(yaml_parser_t* parser, char** command);
+// void parse_job(yaml_parser_t* parser, struct ProcessJob* job);
+// void parse_env(yaml_parser_t* parser, struct Env** env);
+// void parse_network(yaml_parser_t* parser, struct ProcessNetwork* net);
+// void parse_network_
+#endif // PARSE_PROC_SPEC_H
