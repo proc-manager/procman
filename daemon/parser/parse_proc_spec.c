@@ -11,10 +11,36 @@ void print_parsed_process(struct Process process){
     printf("Pid = %d\n", process.Pid);
 }
 
+void print_parsed_image(struct Image image){
+    printf("-------Image-----\n");
+    printf("%s", image.Id);
+    printf("%s", image.Name);
+    printf("%s", image.ContextTempDir);
+    printf("%s", image.ImgPath);
+    printf("%s", image.Tag);
+    printf("%s", image.Created);
+    printf("-------Image-----\n");
+}
+
+void free_image(struct Image* image) {
+    free(image->Id);
+    free(image->Name);
+    free(image->ContextTempDir);
+    free(image->ImgPath);
+    free(image->Tag);
+    free(image->Created);
+    free(image);
+    image = NULL;
+}
+
 void free_process(struct Process* process) {
     free(process->Id);
     free(process->Name);
+    free_image(process->Image);
+
+    // free process mem
     free(process);
+    process = NULL;
 }
 
 void parse_process_yaml(char* filepath, struct Process* process) {
@@ -64,7 +90,12 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->Name = strdup((char*)event.data.scalar.value);
                 } else if (strcmp(key, "pid") == 0) {
                     process->Pid = atoi((char*)event.data.scalar.value);
-                } 
+                } else if (strcmp(key, "contextDir") == 0) {
+                    process->ContextDir = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "image") == 0) {
+                    struct Image* image = calloc(1, sizeof(struct Image));
+                    parse_process_yaml(&parser, image);
+                }
                 free(key);
                 key = NULL; 
             }
@@ -77,45 +108,45 @@ void parse_process_yaml(char* filepath, struct Process* process) {
 }
 
 
-// void parse_image(yaml_parser_t* parser, struct Image* image) {
-//     yaml_event_t event;
-//     char* key = NULL;
+void parse_image(yaml_parser_t* parser, struct Image* image) {
+    yaml_event_t event;
+    char* key = NULL;
 
-//     while(1) {
-//         if (!yaml_parser_parse(parser, &event)) {
-//             fprintf(stderr, "parser error: %d\n", parser->error);
-//             break;
-//         }
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        }
 
-//         if (event.type == YAML_MAPPING_END_EVENT) {
-//             break;
-//         }
+        if (event.type == YAML_MAPPING_END_EVENT) {
+            break;
+        }
 
-//         if (event.type == YAML_SCALAR_EVENT) {
-//             if (key == NULL) {
-//                 key = strdup((char*)event.data.scalar.value);
-//                 continue;
-//             } else {
-//                 if (strcmp(key, "Id") == 0) {
-//                     image->Id = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "name") == 0) {
-//                     image->Name = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "context_temp_dir") == 0) {
-//                     image->ContextTempDir = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "img_path") == 0) {
-//                     image->ImgPath = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "tag") == 0) {
-//                     image->Tag = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "created") == 0) {
-//                     image->Created = strdup((char*)event.data.scalar.value);
-//                 }
-//             }
-//             free(key);
-//             key = NULL;
-//         }
-//         yaml_event_delete(&event);
-//     }
-// }
+        if (event.type == YAML_SCALAR_EVENT) {
+            if (key == NULL) {
+                key = strdup((char*)event.data.scalar.value);
+                continue;
+            } else {
+                if (strcmp(key, "Id") == 0) {
+                    image->Id = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "name") == 0) {
+                    image->Name = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "context_temp_dir") == 0) {
+                    image->ContextTempDir = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "img_path") == 0) {
+                    image->ImgPath = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "tag") == 0) {
+                    image->Tag = strdup((char*)event.data.scalar.value);
+                } else if (strcmp(key, "created") == 0) {
+                    image->Created = strdup((char*)event.data.scalar.value);
+                }
+            }
+            free(key);
+            key = NULL;
+        }
+        yaml_event_delete(&event);
+    }
+}
 
 // void parse_job_command(yaml_parser_t* parser, char** command) {
 //     yaml_event_t event;

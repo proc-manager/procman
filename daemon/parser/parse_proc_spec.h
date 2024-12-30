@@ -49,7 +49,7 @@ struct Process {
 };
 
 void parse_process_yaml(char* filepath, struct Process* process);
-// void parse_image(yaml_parser_t* parser, struct Image* image);
+void parse_image(yaml_parser_t* parser, struct Image* image);
 // void parse_job_command(yaml_parser_t* parser, char** command);
 // void parse_job(yaml_parser_t* parser, struct ProcessJob* job);
 // void parse_env(yaml_parser_t* parser, struct Env** env);
