@@ -26,6 +26,7 @@ func buildProcessContext(name string, image_name string, image_tag string) (*Pro
 
 	proc := &Process{
 		Id:         uid,
+		Name:       name,
 		Image:      *img,
 		ContextDir: procDir,
 	}
