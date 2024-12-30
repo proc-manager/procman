@@ -148,11 +148,11 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                     image->Created = strdup((char*)event.data.scalar.value);
                     printf("image Created: %s\n", image->Created);
                 }
-                free(key);
-                key = NULL;
             }
-
+            free(key);
+            key = NULL;
         }
+
         yaml_event_delete(&event);
     }
 }
