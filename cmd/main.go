@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	procman.BuildProcessContext("test-proc", "", "test1", "0.0.1")
+	procman.BuildProcessContext("test-proc", "", "test1", "v0.0.1")
 }
