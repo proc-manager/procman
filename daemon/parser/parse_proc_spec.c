@@ -72,6 +72,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
 
         yaml_event_delete(&event);
     }
+    print_parsed_process(*process);
     free_process(process);
 }
 
