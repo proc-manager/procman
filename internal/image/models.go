@@ -1,4 +1,4 @@
-package images
+package image
 
 type Image struct {
 	Id             string `yaml:"id"`

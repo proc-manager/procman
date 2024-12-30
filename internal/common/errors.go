@@ -2,6 +2,8 @@ package common
 
 import "fmt"
 
+// image errors
+
 type ImageBuildErr struct {
 	Code    int    `json:"code"`
 	Message string `json:"message,omitempty"`
@@ -35,5 +37,16 @@ type ImageDelErr struct {
 }
 
 func (e *ImageDelErr) Error() string {
+	return fmt.Sprintf("Error %d: %s", e.Code, e.Message)
+}
+
+// proc errors
+
+type ProcStartErr struct {
+	Code    int    `json:"code"`
+	Message string `json:"message,omitempty"`
+}
+
+func (e *ProcStartErr) Error() string {
 	return fmt.Sprintf("Error %d: %s", e.Code, e.Message)
 }

@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 
 	"github.com/rutu-sh/procman/internal/common"
-	"github.com/rutu-sh/procman/internal/images"
+	"github.com/rutu-sh/procman/internal/image"
 )
 
 func BuildImage(name string, tag string, context_dir string) (*Image, *ImageError) {
 	_logger := common.GetLogger()
 
-	imgfind, imgfind_err := images.GetImage("", name, tag)
+	imgfind, imgfind_err := image.GetImage("", name, tag)
 	if imgfind_err != nil {
 		return nil, nil
 	}
@@ -34,7 +34,7 @@ func BuildImage(name string, tag string, context_dir string) (*Image, *ImageErro
 		return nil, &ImageError{Message: fmt.Sprintf("error getting abs path: %v", err)}
 	}
 
-	res, errbuild := images.BuildImage(name, tag, abs_context_dir)
+	res, errbuild := image.BuildImage(name, tag, abs_context_dir)
 	if errbuild != nil {
 		_logger.Error().Msgf("error building image: %v", errbuild)
 		return nil, &ImageError{Message: fmt.Sprintf("error building: %v", errbuild)}
@@ -57,7 +57,7 @@ func BuildImage(name string, tag string, context_dir string) (*Image, *ImageErro
 func ListImages() (*[]*Image, *ImageListError) {
 	_logger := common.GetLogger()
 
-	res, err := images.ListImages()
+	res, err := image.ListImages()
 	if err != nil {
 		_logger.Error().Msgf("error listing images: %v", err)
 		return &[]*Image{}, nil
@@ -84,7 +84,7 @@ func ListImages() (*[]*Image, *ImageListError) {
 func GetImage(image_id string, name string, tag string) (*Image, *ImageError) {
 	_logger := common.GetLogger()
 
-	res, err := images.GetImage(image_id, name, tag)
+	res, err := image.GetImage(image_id, name, tag)
 	if err != nil {
 		_logger.Error().Msgf("error getting image (%v, %v, %v): %v", image_id, name, tag, err)
 		return nil, &ImageError{Message: err.Message}
@@ -107,7 +107,7 @@ func DelImage(image_id string, name string, tag string) *ImageError {
 	_logger := common.GetLogger()
 	_logger.Info().Msgf("deletimg image (%v, %v, %v)", image_id, name, tag)
 
-	res, err := images.GetImage(image_id, name, tag)
+	res, err := image.GetImage(image_id, name, tag)
 	if err != nil {
 		_logger.Error().Msgf("error getting image (%v, %v, %v): %v", image_id, name, tag, err)
 		return &ImageError{Message: err.Message}
@@ -116,7 +116,7 @@ func DelImage(image_id string, name string, tag string) *ImageError {
 		return &ImageError{Message: "not found"}
 	}
 
-	delErr := images.DelImage(res.Id)
+	delErr := image.DelImage(res.Id)
 	if delErr != nil {
 		return &ImageError{Message: delErr.Message}
 	}
