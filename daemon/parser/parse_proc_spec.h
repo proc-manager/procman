@@ -2,6 +2,7 @@
 #define PARSE_PROC_SPEC_H
 
 #include <sys/types.h>
+#include <yaml.h>
 
 struct Env {
     char* Key;
