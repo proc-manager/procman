@@ -109,6 +109,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     break;
                 } else if (strcmp(key, "image") == 0) {
                     free(key);
+                    key = NULL;
                     struct Image* image = (struct Image*)calloc(1, sizeof(struct Image));
                     parse_image(&parser, image);
                     process->Image = image;
