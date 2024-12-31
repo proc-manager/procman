@@ -17,7 +17,7 @@ void print_parsed_image(struct Image* image){
 }
 
 void print_parsed_process(struct Process *process){
-    printf("Id = %s\n", process -> Id);
+    printf("Id = %s\n", process->Id);
     printf("Name = %s\n", process->Name);
     printf("Pid = %d\n", process->Pid);
     print_parsed_image(process->Image);
@@ -113,6 +113,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     free(key);
                     struct Image* image = calloc(1, sizeof(struct Image));
                     parse_image(&parser, image);
+                    process->Image = image;
                 }
                 break;
         }
