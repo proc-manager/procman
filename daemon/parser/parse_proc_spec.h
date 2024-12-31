@@ -58,7 +58,7 @@ struct Process {
     char* ContextDir;
     struct Image* Image;
     struct ProcessJob* Job;
-    struct Env* Env;
+    struct ProcessEnv* Env;
     struct ProcessNetwork* Network;
 };
 
