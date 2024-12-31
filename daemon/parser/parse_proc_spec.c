@@ -261,7 +261,7 @@ void parse_process_job(yaml_parser_t* parser, struct ProcessJob* job) {
                     } else if ( strcmp(key, "command") == 0 ) {
                         yaml_event_delete(&event);
                         job->Command = (struct ProcessJobCommand*)calloc(1, sizeof(struct ProcessJobCommand));
-                        parse_job_command(&parser, job->Command);
+                        parse_job_command(parser, job->Command);
                         break;
                     }
                     free(key);
