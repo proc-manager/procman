@@ -304,7 +304,7 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
 
             case YAML_SCALAR_EVENT:
                 val = strdup((char*)event.data.scalar.value); 
-                printf("\nread scalar: \n", val);
+                printf("\nread scalar: %s\n", val);
                 args[argc] = val;
                 argc = argc + 1;
                 args = (char**)realloc(args, argc+1); 
@@ -312,7 +312,7 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
                     perror("error realloc");
                     exit(1);
                 }
-                args[argc] = NULL;  // args[1] = NULL
+                args[argc] = NULL; 
                 yaml_event_delete(&event);
                 break;
 
