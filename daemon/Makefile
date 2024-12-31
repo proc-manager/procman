@@ -21,7 +21,7 @@ all: $(EXEC)
 
 # Link the executable
 $(EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LIBS)
+	$(CC) $(OBJS) -g -o $@ $(LIBS)
 
 # Compile source files to object files
 %.o: %.c
