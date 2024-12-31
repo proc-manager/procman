@@ -176,6 +176,7 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                     free(key);
                     key = NULL;
                 }
+                yaml_event_delete(&event);
                 break;
 
             case YAML_MAPPING_END_EVENT:
@@ -183,10 +184,16 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                     free(key);
                     key = NULL;
                 }
+                yaml_event_delete(&event);
                 printf("mapping end event\n");
                 return; 
         }
     }
+    if (key != NULL){
+        free(key);
+        key = NULL;
+    }
+
 }
 
 // void parse_job_command(yaml_parser_t* parser, char** command) {
