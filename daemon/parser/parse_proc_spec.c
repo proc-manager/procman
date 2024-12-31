@@ -48,6 +48,7 @@ void free_process_job(struct ProcessJob* job) {
     }
     free(cmd->command);
     free(cmd->args);
+    free(cmd);
     free(job);
 }
 
