@@ -88,10 +88,13 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                 } else {
                     if ( strcmp(key, "id") == 0 ) {
                         process->Id = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, process->Id);
                     } else if ( strcmp(key, "name") == 0 ) {
                         process->Name = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, process->Name);
                     } else if ( strcmp(key, "pid") == 0 ) {
                         process->Pid = atoi(strdup((char*)event.data.scalar.value));
+                        printf("key: %s, val: %d", key, process->Pid);
                     } else if (strcmp(key, "image") == 0) {
                         break;
                     }
@@ -128,6 +131,9 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
 
         switch(event.type) {
             case YAML_MAPPING_START_EVENT:
+                if (key != NULL){
+                    free(key);
+                }
                 key = NULL;
                 break;
 
