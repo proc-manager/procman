@@ -81,21 +81,28 @@ void parse_process_yaml(char* filepath, struct Process* process) {
             break;
         }
 
+        printf("c1\n");
         switch(event.type) {
             case YAML_SCALAR_EVENT:
                 if (key == NULL) {
+                    printf("c2\n");
                     key = strdup((char*)event.data.scalar.value);
+                    break;
                 } else {
                     if ( strcmp(key, "id") == 0 ) {
+                        printf("c3\n");
                         process->Id = strdup((char*)event.data.scalar.value);
                         printf("key: %s, val: %s", key, process->Id);
                     } else if ( strcmp(key, "name") == 0 ) {
+                        printf("c4\n");
                         process->Name = strdup((char*)event.data.scalar.value);
                         printf("key: %s, val: %s", key, process->Name);
                     } else if ( strcmp(key, "pid") == 0 ) {
+                        printf("c5\n");
                         process->Pid = atoi(strdup((char*)event.data.scalar.value));
                         printf("key: %s, val: %d", key, process->Pid);
                     } else if (strcmp(key, "image") == 0) {
+                        printf("c6\n");
                         break;
                     }
                 }
@@ -109,6 +116,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     struct Image* image = calloc(1, sizeof(struct Image));
                     parse_image(&parser, image);
                 }
+                break;
         }
         yaml_event_delete(&event);
     }
