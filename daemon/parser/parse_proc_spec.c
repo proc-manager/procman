@@ -178,7 +178,6 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 printf("mapping end event\n");
                 return; 
         }
-        yaml_event_delete(&event);
     }
 }
 
