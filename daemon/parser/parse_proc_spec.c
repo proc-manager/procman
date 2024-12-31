@@ -119,6 +119,11 @@ void parse_process_yaml(char* filepath, struct Process* process) {
         yaml_event_delete(&event);
     }
 
+    if (key != NULL){
+        free(key);
+        key = NULL;
+    }
+
     printf("parsed the yaml\n");
     yaml_parser_delete(&parser);
     fclose(file);
@@ -174,6 +179,10 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 break;
 
             case YAML_MAPPING_END_EVENT:
+                if ( key != NULL ){
+                    free(key);
+                    key = NULL;
+                }
                 printf("mapping end event\n");
                 return; 
         }
