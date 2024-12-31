@@ -21,11 +21,11 @@ all: $(EXEC)
 
 # Link the executable
 $(EXEC): $(OBJS)
-	$(CC) $(OBJS) -g -o $@ $(LIBS)
+	$(CC) $(OBJS) -o $@ $(LIBS)
 
 # Compile source files to object files
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -g -c $< -o $@
 
 # Clean up
 clean:
