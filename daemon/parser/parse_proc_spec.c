@@ -116,6 +116,8 @@ void parse_process_yaml(char* filepath, struct Process* process) {
         }
         yaml_event_delete(&event);
     }
+
+    printf("parsed the yaml\n");
     yaml_parser_delete(&parser);
     fclose(file);
     print_parsed_process(*process);
