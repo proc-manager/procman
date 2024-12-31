@@ -305,6 +305,7 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
 
         switch(event.type) {
             case YAML_SEQUENCE_START_EVENT:
+                printf("sequence start\n");
                 yaml_event_delete(&event);
                 break;
 
@@ -323,13 +324,13 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
                 break;
 
             case YAML_SEQUENCE_END_EVENT:
+                printf("sequence delete\n");
                 job->argc = argc;
                 if(argc > 0){
                     job->args = args;
                     job->command = strdup(args[0]);
                 }
                 yaml_event_delete(&event);
-                printf("mapping end event\n");
                 return; 
             default:
                 yaml_event_delete(&event);
