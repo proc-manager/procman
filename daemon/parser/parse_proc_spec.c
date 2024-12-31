@@ -124,10 +124,8 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
             break;
         }
 
-        if (event.type == YAML_MAPPING_START_EVENT) {
-            key = strdup((char*)event.data.scalar.value);
-            printf("KEY = %s\n", key);
-        }
+        key = strdup((char*)event.data.scalar.value);
+        printf("KEY = %s\n", key);
 
         if (event.type == YAML_SCALAR_EVENT) {
             if (key == NULL) {
