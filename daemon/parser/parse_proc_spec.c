@@ -19,10 +19,9 @@ void print_parsed_image(struct Image* image){
 void print_parsed_job(struct ProcessJob* job){
     printf("-------Job-----\n");
     printf("%s\n", job->Name);
-    printf("%s\n", job->Command);
 
-    printf("command\n");
     struct ProcessJobCommand* cmd = job -> Command;
+    printf("command: %s\n", cmd->command);
     for(int c=0; c < cmd->argc; c++){
         if( cmd->args[c] != NULL ){
             printf("%s ", cmd->args[c]);
