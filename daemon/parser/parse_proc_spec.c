@@ -302,14 +302,14 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
                 break;
 
             case YAML_SCALAR_EVENT:
-                argc = argc + 1;
-                args[argc-1] = strdup((char*)event.data.scalar.value); 
-                args = (char**)realloc(args, argc+1);
+                argc = argc + 1; // argc = 1
+                args[argc-1] = strdup((char*)event.data.scalar.value);  // args[0] = asdf
+                args = (char**)realloc(args, argc+1); // args[1] -> args[2]
                 if ( args == NULL ) {
                     perror("error realloc");
                     exit(1);
                 }
-                args[argc] = NULL; 
+                args[argc] = NULL;  // args[1] = NULL
                 yaml_event_delete(&event);
                 break;
 
@@ -322,6 +322,8 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
                 yaml_event_delete(&event);
                 printf("mapping end event\n");
                 return; 
+            default:
+                yaml_event_delete(&event);
         }
     }
 }
