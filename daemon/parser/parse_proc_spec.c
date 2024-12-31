@@ -20,7 +20,7 @@ void print_parsed_job(struct ProcessJob* job){
     printf("-------Job-----\n");
     printf("%s\n", job->Name);
 
-    struct ProcessJobCommand* cmd = job -> Command;
+    struct ProcessJobCommand* cmd = job->Command;
     printf("command: %s\n", cmd->command);
     for(int c=0; c < cmd->argc; c++){
         if( cmd->args[c] != NULL ){
@@ -40,7 +40,7 @@ void print_parsed_process(struct Process *process){
 
 void free_process_job(struct ProcessJob* job) {
     free(job->Name);
-    struct ProcessJobCommand* cmd = job -> Command;
+    struct ProcessJobCommand* cmd = job->Command;
     for(int c=0; c < cmd->argc; c++){
         if( cmd->args[c] != NULL ){
             free(cmd->args[c]);

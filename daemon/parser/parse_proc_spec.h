@@ -31,7 +31,7 @@ struct ProcessJobCommand{
 
 struct ProcessJob {
     char* Name;
-    struct ProcessCommand* Command;
+    struct ProcessJobCommand* Command;
 };
 
 struct ProcessNetwork {
