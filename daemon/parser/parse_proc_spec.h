@@ -1,6 +1,8 @@
 #ifndef PARSE_PROC_SPEC_H
 #define PARSE_PROC_SPEC_H
 
+#define MAX_ARGS 20
+
 #include <sys/types.h>
 #include <yaml.h>
 

@@ -303,8 +303,10 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
 
     job->argc = 0;
     int argc = 0;
-    char** args = (char**)calloc(1, sizeof(char*));
     char* val = NULL;
+    char* args[MAX_JOB_CMD_ARGS];
+    memset(args, 0, sizeof(args));
+
 
     while(1) {
         if (!yaml_parser_parse(parser, &event)) {
@@ -319,24 +321,30 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
                 break;
 
             case YAML_SCALAR_EVENT:
-                val = strdup((char*)event.data.scalar.value); 
-                printf("\nread scalar: %s\n", val);
-                args[argc] = val;
+                // val = strdup((char*)event.data.scalar.value); 
+                // printf("\nread scalar: %s\n", val);
+                if (argc == MAX_JOB_CMD_ARGS ){
+                    perror("too many args in cmd");
+                    exit(1);
+                }
+                args[argc] = strdup((char*)event.data.scalar.value); 
                 argc = argc + 1;
-                args = (char**)realloc(args, argc+1); 
                 if ( args == NULL ) {
                     perror("error realloc");
                     exit(1);
                 }
-                args[argc] = NULL; 
                 yaml_event_delete(&event);
                 break;
 
             case YAML_SEQUENCE_END_EVENT:
                 printf("sequence delete\n");
                 job->argc = argc;
+                char** argsptr = (char**)calloc(argc, sizeof(char*));
                 if(argc > 0){
-                    job->args = args;
+                    for(int c=0; c < argc; c++){
+                        argsptr[c] = args[c];
+                    }
+                    job->args = argsptr;
                     job->command = strdup(args[0]);
                 }
                 yaml_event_delete(&event);
