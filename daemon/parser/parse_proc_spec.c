@@ -175,7 +175,6 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 break;
 
             case YAML_MAPPING_END_EVENT:
-                yaml_event_delete(&event);
                 printf("mapping end event\n");
                 return; 
         }
