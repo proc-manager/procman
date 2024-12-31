@@ -81,28 +81,22 @@ void parse_process_yaml(char* filepath, struct Process* process) {
             break;
         }
 
-        printf("c1\n");
         switch(event.type) {
             case YAML_SCALAR_EVENT:
                 if (key == NULL) {
-                    printf("c2\n");
                     key = strdup((char*)event.data.scalar.value);
                     break;
                 } else {
                     if ( strcmp(key, "id") == 0 ) {
-                        printf("c3\n");
                         process->Id = strdup((char*)event.data.scalar.value);
                         printf("key: %s, val: %s", key, process->Id);
                     } else if ( strcmp(key, "name") == 0 ) {
-                        printf("c4\n");
                         process->Name = strdup((char*)event.data.scalar.value);
                         printf("key: %s, val: %s", key, process->Name);
                     } else if ( strcmp(key, "pid") == 0 ) {
-                        printf("c5\n");
                         process->Pid = atoi(strdup((char*)event.data.scalar.value));
                         printf("key: %s, val: %d", key, process->Pid);
                     } else if (strcmp(key, "image") == 0) {
-                        printf("c6\n");
                         break;
                     }
                 }
@@ -153,16 +147,22 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 } else {
                     if ( strcmp(key, "id") == 0 ) {
                         image->Id = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->Id);
                     } else if ( strcmp(key, "name") == 0 ) {
                         image->Name = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->Name);
                     } else if ( strcmp(key, "context_temp_dir") == 0 ) {
                         image->ContextTempDir = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->ContextTempDir);
                     } else if ( strcmp(key, "imgpath") == 0 ) {
                         image->ImgPath = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->ImgPath);
                     } else if ( strcmp(key, "tag") == 0 ) {
                         image->Tag = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->Tag);
                     } else if ( strcmp(key, "created") == 0 ) {
                         image->Created = strdup((char*)event.data.scalar.value);
+                        printf("key: %s, val: %s", key, image->Created);
                     }
                 }
                 break;
