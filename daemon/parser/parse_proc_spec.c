@@ -6,18 +6,18 @@
 
 
 void print_parsed_image(struct Image* image){
-    printf("-------Image-----\n");
+    printf("\n-------Image-----\n");
     printf("%s\n", image->Id);
     printf("%s\n", image->Name);
     printf("%s\n", image->ContextTempDir);
     printf("%s\n", image->ImgPath);
     printf("%s\n", image->Tag);
     printf("%s\n", image->Created);
-    printf("-------Image-----\n");
+    printf("\n-------Image-----\n");
 }
 
 void print_parsed_job(struct ProcessJob* job){
-    printf("-------Job-----\n");
+    printf("\n-------Job-----\n");
     printf("%s\n", job->Name);
 
     struct ProcessJobCommand* cmd = job->Command;
@@ -30,16 +30,32 @@ void print_parsed_job(struct ProcessJob* job){
     printf("\n-------Job-----\n");   
 }
 
+void print_process_env(struct ProcessEnv* penv){
+    printf("\n-------ENV-----\n");   
+    printf("env_count: %d\n", penv->count);
+    struct Env** envs = penv->env;
+    for(int e=0; e < penv->count; e++){
+        if( penv->env[e] != NULL ){
+            printf("key: %s, val: %s", penv->env[e]->Key, penv->env[e]->Val);
+        }
+    }
+    printf("\n-------ENV-----\n");   
+}
+
 void print_parsed_process(struct Process *process){
     printf("Id = %s\n", process->Id);
     printf("Name = %s\n", process->Name);
     printf("Pid = %d\n", process->Pid);
     print_parsed_image(process->Image);
     print_parsed_job(process->Job);
+    print_process_env(process->Env);
 }
 
 void free_process_job(struct ProcessJob* job) {
-    free(job->Name);
+
+    if( job == NULL ){
+        return;
+    }
     struct ProcessJobCommand* cmd = job->Command;
     for(int c=0; c < cmd->argc; c++){
         if( cmd->args[c] != NULL ){
@@ -50,6 +66,20 @@ void free_process_job(struct ProcessJob* job) {
     free(cmd->args);
     free(cmd);
     free(job);
+}
+
+void free_process_env(struct ProcessEnv* penv) {
+    if ( penv == NULL ) {
+        return;
+    } 
+    struct Env** env = penv->env;
+    for(int e=0; e < penv->count; e++){
+        if( env[e] != NULL ){
+            free(env[e]);
+        }
+    }
+    free(penv->env);
+    free(penv);
 }
 
 void free_image(struct Image* image) {
@@ -68,6 +98,7 @@ void free_process(struct Process* process) {
     free(process->Name);
     free_image(process->Image);
     free_process_job(process->Job);
+    free_process_env(process->Env);
     // free process mem
     free(process);
     process = NULL;
@@ -129,6 +160,8 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                         break;
                     } else if ( strcmp(key, "job") == 0 ) {
                        break; 
+                    } else if ( strcmp(key, "env") == 0 ) {
+                        break;
                     }
                 }
                 free(key);
@@ -150,6 +183,12 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     struct ProcessJob* job = (struct ProcessJob*)calloc(1, sizeof(struct ProcessJob));
                     parse_process_job(&parser, job);
                     process->Job = job;
+                } else if (strcmp(key, "env") == 0) {
+                    free(key);
+                    key = NULL;
+                    struct ProcessEnv* penv = calloc(1, sizeof(struct ProcessEnv));
+                    parse_process_env(&parser, penv);
+                    process->Env = penv;
                 }
                 break;
         }
@@ -316,14 +355,7 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
         } 
 
         switch(event.type) {
-            case YAML_SEQUENCE_START_EVENT:
-                printf("sequence start\n");
-                yaml_event_delete(&event);
-                break;
-
             case YAML_SCALAR_EVENT:
-                // val = strdup((char*)event.data.scalar.value); 
-                // printf("\nread scalar: %s\n", val);
                 if (argc == MAX_JOB_CMD_ARGS ){
                     perror("too many args in cmd");
                     exit(1);
@@ -353,5 +385,72 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
             default:
                 yaml_event_delete(&event);
         }
+    }
+}
+
+
+void parse_process_env(yaml_parser_t* parser, struct ProcessEnv* penv) {
+    yaml_event_t event;
+
+    int env_count = 0; 
+    struct Env* env_vars[MAX_PROC_ENV];
+    struct Env* curr_env = NULL;
+    memset(env_vars, 0, sizeof(env_vars));
+
+    char* key = NULL;
+    char* val = NULL;
+    
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        } 
+
+        switch (event.type)
+        {
+            case YAML_SCALAR_EVENT:
+                if (env_count == MAX_PROC_ENV ){
+                    perror("too many envs");
+                    exit(1);
+                }
+                if ( key == NULL ){
+                    key = strdup((char*)event.data.scalar.value); 
+                } else {
+                    if ( key != NULL ){
+                        val = strdup((char*)event.data.scalar.value); 
+                        curr_env = (struct Env*)calloc(1, sizeof(struct Env));
+                        curr_env->Key = key;
+                        curr_env->Val = val;
+                        key = NULL;
+                        val = NULL;
+                        env_vars[env_count] = curr_env;
+                        curr_env = NULL;
+                        env_count = env_count + 1;
+                    } else {
+                        free(key);
+                        yaml_event_delete(&event);
+                        perror("invalid yaml");
+                        exit(1);
+                    }
+                }
+                break;
+
+            case YAML_MAPPING_END_EVENT:
+                struct Env** env = (struct Env**)calloc(env_count, sizeof(struct Env*));
+                if (env_count > 0){
+                    for(int e=0; e < env_count; e++){
+                        env[e] = env_vars[e];
+                    }
+                }
+                penv->env = env;
+                penv->count = env_count;
+                yaml_event_delete(&event);
+                return; 
+                        
+            default:
+                break;
+        }
+
+        yaml_event_delete(&event);
     }
 }
