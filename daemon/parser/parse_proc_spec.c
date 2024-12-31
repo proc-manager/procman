@@ -94,7 +94,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                         process->Name = strdup((char*)event.data.scalar.value);
                         // printf("key: %s, val: %s\n", key, process->Name);
                     } else if ( strcmp(key, "pid") == 0 ) {
-                        process->Pid = atoi(strdup((char*)event.data.scalar.value));
+                        process->Pid = atoi((char*)event.data.scalar.value);
                         // printf("key: %s, val: %d\n", key, process->Pid);
                     } else if (strcmp(key, "image") == 0) {
                         break;
