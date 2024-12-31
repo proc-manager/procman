@@ -106,8 +106,10 @@ void parse_process_yaml(char* filepath, struct Process* process) {
             
             case YAML_MAPPING_START_EVENT:
                 if (key == NULL) {
+                    printf("c1\n");
                     break;
                 } else if (strcmp(key, "image") == 0) {
+                    printf("c2\n");
                     free(key);
                     struct Image* image = calloc(1, sizeof(struct Image));
                     parse_image(&parser, image);
