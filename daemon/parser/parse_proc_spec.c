@@ -122,7 +122,7 @@ void parse_process_yaml(char* filepath, struct Process* process) {
     printf("parsed the yaml\n");
     yaml_parser_delete(&parser);
     fclose(file);
-    print_parsed_process(*process);
+    print_parsed_process(process);
     free_process(process);
 }
 
