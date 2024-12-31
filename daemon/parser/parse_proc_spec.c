@@ -16,11 +16,40 @@ void print_parsed_image(struct Image* image){
     printf("-------Image-----\n");
 }
 
+void print_parsed_job(struct ProcessJob* job){
+    printf("-------Job-----\n");
+    printf("%s\n", job->Name);
+    printf("%s\n", job->Command);
+
+    printf("command\n");
+    struct ProcessJobCommand* cmd = job -> Command;
+    for(int c=0; c < cmd->argc; c++){
+        if( cmd->args[c] != NULL ){
+            printf("%s ", cmd->args[c]);
+        }
+    }
+    printf("\n-------Job-----\n");   
+}
+
 void print_parsed_process(struct Process *process){
     printf("Id = %s\n", process->Id);
     printf("Name = %s\n", process->Name);
     printf("Pid = %d\n", process->Pid);
     print_parsed_image(process->Image);
+    print_parsed_job(process->Job);
+}
+
+void free_process_job(struct ProcessJob* job) {
+    free(job->Name);
+    struct ProcessJobCommand* cmd = job -> Command;
+    for(int c=0; c < cmd->argc; c++){
+        if( cmd->args[c] != NULL ){
+            free(cmd->args[c]);
+        }
+    }
+    free(cmd->command);
+    free(cmd->args);
+    free(job);
 }
 
 void free_image(struct Image* image) {
@@ -38,7 +67,7 @@ void free_process(struct Process* process) {
     free(process->Id);
     free(process->Name);
     free_image(process->Image);
-
+    free_process_job(process->Job);
     // free process mem
     free(process);
     process = NULL;
@@ -96,8 +125,10 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     } else if ( strcmp(key, "pid") == 0 ) {
                         process->Pid = atoi((char*)event.data.scalar.value);
                         // printf("key: %s, val: %d\n", key, process->Pid);
-                    } else if (strcmp(key, "image") == 0) {
+                    } else if ( strcmp(key, "image") == 0 ) {
                         break;
+                    } else if ( strcmp(key, "job") == 0 ) {
+                       break; 
                     }
                 }
                 free(key);
@@ -113,6 +144,12 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     struct Image* image = (struct Image*)calloc(1, sizeof(struct Image));
                     parse_image(&parser, image);
                     process->Image = image;
+                } else if (strcmp(key, "job") == 0) {
+                    free(key);
+                    key = NULL;
+                    struct ProcessJob* job = (struct ProcessJob*)calloc(1, sizeof(struct ProcessJob));
+                    parse_process_job(&parser, job);
+                    process->Job = job;
                 }
                 break;
         }
@@ -196,64 +233,96 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
 
 }
 
-// void parse_job_command(yaml_parser_t* parser, char** command) {
-//     yaml_event_t event;
+void parse_process_job(yaml_parser_t* parser, struct ProcessJob* job) {
+    yaml_event_t event;
+    char* key = NULL;
 
-//     size_t size = 1;   
-//     if ( command == NULL ){
-//         command = (char**)calloc(size, sizeof(char *));
-//     }
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        } 
 
-//     while(1) {
-//         if (!yaml_parser_parse(parser, &event)) {
-//             fprintf(stderr, "parser error: %d\n", parser->error);
-//             break;
-//         }
+        switch(event.type) {
+            case YAML_MAPPING_START_EVENT:
+                if (key != NULL){
+                    free(key);
+                }
+                key = NULL;
+                break;
 
-//         if (event.type == YAML_SEQUENCE_END_EVENT) {
-//             break;
-//         }
+            case YAML_SCALAR_EVENT:
+                if ( key == NULL ) {
+                    key = strdup((char*)event.data.scalar.value);
+                } else {
+                    if ( strcmp(key, "name") == 0 ) {
+                        job->Name = strdup((char*)event.data.scalar.value);
+                        // printf("key: %s, val: %s\n", key, image->Name);
+                    } else if ( strcmp(key, "command") == 0 ) {
+                        job->Command = (struct ProcessJobCommand*)calloc(1, sizeof(struct ProcessJobCommand));
+                        parse_job_command(&parser, job->Command);
+                    }
+                    free(key);
+                    key = NULL;
+                }
+                yaml_event_delete(&event);
+                break;
 
-//         if (event.type == YAML_SCALAR_EVENT) {
-//             command[size-1] = strdup((char*)event.data.scalar.value);
-//             size = size + 1;
-//             command = (char*)realloc(command, size); 
-//             if (command == NULL) {
-//                 perror("realloc failed");
-//                 exit(1);
-//             }
-//         }
-//     }
-//     yaml_event_delete(&event);
-// }
+            case YAML_MAPPING_END_EVENT:
+                if ( key != NULL ){
+                    free(key);
+                    key = NULL;
+                }
+                yaml_event_delete(&event);
+                printf("mapping end event\n");
+                return; 
+        }
+    }
+    if (key != NULL){
+        free(key);
+        key = NULL;
+    }
+}
 
+void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) { 
+    yaml_event_t event;
 
-// void parse_job(yaml_parser_t* parser, struct ProcessJob* job) {
-//     yaml_event_t event;
-//     char *key = NULL;
+    job->argc = 0;
+    int argc = 0;
+    char** args = (char**)calloc(1, sizeof(char*));
 
-//     while(1) {
-//         if (!yaml_parser_parse(parser, &event)) {
-//             fprintf(stderr, "parser error: %d\n", parser->error);
-//             break;
-//         }
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        } 
 
-//         if (event.type == YAML_MAPPING_END_EVENT) {
-//             break;
-//         }
+        switch(event.type) {
+            case YAML_SEQUENCE_START_EVENT:
+                yaml_event_delete(&event);
+                break;
 
-//         if (event.type == YAML_SCALAR_EVENT) {
-//             if (key == NULL){
-//                 key = strdup((char*)event.data.scalar.value);
-//                 continue;
-//             } else {
-//                 if(strcmp(key, "name") == 0) {
-//                     job->Name = strdup((char*)event.data.scalar.value);
-//                 } else if (strcmp(key, "command") == 0) {
-//                     char** Command = NULL;
-//                     parse_job_command(&event, Command); 
-//                 }
-//             }
-//         }
-//     }
-// }
+            case YAML_SCALAR_EVENT:
+                argc = argc + 1;
+                args[argc-1] = strdup((char*)event.data.scalar.value); 
+                args = (char**)realloc(args, argc+1);
+                if ( args == NULL ) {
+                    perror("error realloc");
+                    exit(1);
+                }
+                args[argc] = NULL; 
+                yaml_event_delete(&event);
+                break;
+
+            case YAML_SEQUENCE_END_EVENT:
+                job->argc = argc;
+                if(argc > 0){
+                    job->args = args;
+                    job->command = strdup(args[0]);
+                }
+                yaml_event_delete(&event);
+                printf("mapping end event\n");
+                return; 
+        }
+    }
+}

@@ -23,7 +23,7 @@ struct PortMapping {
     char* ContainerPort;
 };
 
-struct ProcessCommand{
+struct ProcessJobCommand{
     char* command; 
     char** args; 
     int argc;
@@ -31,7 +31,7 @@ struct ProcessCommand{
 
 struct ProcessJob {
     char* Name;
-    char** Command;
+    struct ProcessCommand* Command;
 };
 
 struct ProcessNetwork {
