@@ -5,22 +5,22 @@
 #include "parse_proc_spec.h"
 
 
-void print_parsed_image(struct Image image){
+void print_parsed_image(struct Image* image){
     printf("-------Image-----\n");
-    printf("%s\n", image.Id);
-    printf("%s\n", image.Name);
-    printf("%s\n", image.ContextTempDir);
-    printf("%s\n", image.ImgPath);
-    printf("%s\n", image.Tag);
-    printf("%s\n", image.Created);
+    printf("%s\n", image->Id);
+    printf("%s\n", image->Name);
+    printf("%s\n", image->ContextTempDir);
+    printf("%s\n", image->ImgPath);
+    printf("%s\n", image->Tag);
+    printf("%s\n", image->Created);
     printf("-------Image-----\n");
 }
 
-void print_parsed_process(struct Process process){
-    printf("Id = %s\n", process.Id);
-    printf("Name = %s\n", process.Name);
-    printf("Pid = %d\n", process.Pid);
-    print_parsed_image(*process.Image);
+void print_parsed_process(struct Process *process){
+    printf("Id = %s\n", process -> Id);
+    printf("Name = %s\n", process->Name);
+    printf("Pid = %d\n", process->Pid);
+    print_parsed_image(process->Image);
 }
 
 void free_image(struct Image* image) {
