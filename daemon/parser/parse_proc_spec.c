@@ -62,6 +62,7 @@ void free_process_job(struct ProcessJob* job) {
             free(cmd->args[c]);
         }
     }
+    free(job->Name);
     free(cmd->command);
     free(cmd->args);
     free(cmd);
@@ -75,6 +76,8 @@ void free_process_env(struct ProcessEnv* penv) {
     struct Env** env = penv->env;
     for(int e=0; e < penv->count; e++){
         if( env[e] != NULL ){
+            free(env[e]->Key);
+            free(env[e]->Val);
             free(env[e]);
         }
     }
