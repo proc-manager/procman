@@ -242,7 +242,7 @@ void parse_process_job(yaml_parser_t* parser, struct ProcessJob* job) {
             break;
         } 
 
-        switch(event.type) {
+        switch(event.type){
             case YAML_MAPPING_START_EVENT:
                 if( key != NULL ){
                     free(key);
@@ -259,7 +259,7 @@ void parse_process_job(yaml_parser_t* parser, struct ProcessJob* job) {
                         job->Name = strdup((char*)event.data.scalar.value);
                         // printf("key: %s, val: %s\n", key, image->Name);
                     } else if ( strcmp(key, "command") == 0 ) {
-                        yaml_event_delete(&event);
+                        // yaml_event_delete(&event);
                         job->Command = (struct ProcessJobCommand*)calloc(1, sizeof(struct ProcessJobCommand));
                         parse_job_command(parser, job->Command);
                         break;
