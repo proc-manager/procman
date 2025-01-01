@@ -5,7 +5,7 @@
 #include "parse_proc_spec.h"
 
 
-void print_parsed_image(struct Image* image){
+void print_parsed_image(struct Image* image) {
     printf("\n-------Image-----\n");
     printf("%s\n", image->Id);
     printf("%s\n", image->Name);
@@ -16,7 +16,7 @@ void print_parsed_image(struct Image* image){
     printf("\n-------Image-----\n");
 }
 
-void print_parsed_job(struct ProcessJob* job){
+void print_parsed_job(struct ProcessJob* job) {
     printf("\n-------Job-----\n");
     printf("%s\n", job->Name);
 
@@ -30,7 +30,7 @@ void print_parsed_job(struct ProcessJob* job){
     printf("\n-------Job-----\n");   
 }
 
-void print_process_env(struct ProcessEnv* penv){
+void print_process_env(struct ProcessEnv* penv) {
     printf("\n-------ENV-----\n");   
     printf("env_count: %d\n", penv->count);
     struct Env** envs = penv->env;
@@ -42,13 +42,42 @@ void print_process_env(struct ProcessEnv* penv){
     printf("\n-------ENV-----\n");   
 }
 
-void print_parsed_process(struct Process *process){
+
+void print_process_network(struct ProcessNetwork* net) {
+    printf("\n-------NET-----\n");   
+    struct PortMapping* pm = net->pm;
+    for(int p=0; p< pm->nports; p++) {
+        printf("%s:%s\n", pm->pmap[p]->HostPort, pm->pmap[p]->ProcPort);
+    }
+    printf("\n-------NET-----\n");   
+}
+
+
+void print_parsed_process(struct Process *process) {
     printf("Id = %s\n", process->Id);
     printf("Name = %s\n", process->Name);
     printf("Pid = %d\n", process->Pid);
     print_parsed_image(process->Image);
     print_parsed_job(process->Job);
     print_process_env(process->Env);
+    print_process_network(process->Network);
+}
+
+
+// TODO: Add Null-Checks everywhere (free, read, etc)
+
+void free_network_port_mapping(struct PortMapping* pm) {
+    for(int p=0; p< pm->nports; p++) {
+        free(pm->pmap[p]->HostPort);
+        free(pm->pmap[p]->ProcPort);
+        free(pm->pmap[p]);
+    }
+    free(pm->pmap);
+}
+
+void free_process_network(struct ProcessNetwork* net) {
+    free_network_port_mapping(net->pm);
+    free(net);
 }
 
 void free_process_job(struct ProcessJob* job) {
@@ -102,6 +131,7 @@ void free_process(struct Process* process) {
     free_image(process->Image);
     free_process_job(process->Job);
     free_process_env(process->Env);
+    free_process_network(process->Network);
     // free process mem
     free(process);
     process = NULL;
@@ -165,6 +195,8 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                        break; 
                     } else if ( strcmp(key, "env") == 0 ) {
                         break;
+                    } else if ( strcmp(key, "network") == 0 ) {
+                        break;
                     }
                 }
                 free(key);
@@ -192,6 +224,12 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     struct ProcessEnv* penv = calloc(1, sizeof(struct ProcessEnv));
                     parse_process_env(&parser, penv);
                     process->Env = penv;
+                } else if (strcmp(key, "network") == 0) {
+                    free(key);
+                    key = NULL;
+                    struct ProcessNetwork* net = calloc(1, sizeof(struct ProcessNetwork));
+                    parse_process_net(&parser, net);
+                    process->Network = net;
                 }
                 break;
         }
@@ -450,6 +488,140 @@ void parse_process_env(yaml_parser_t* parser, struct ProcessEnv* penv) {
                 yaml_event_delete(&event);
                 return; 
                         
+            default:
+                break;
+        }
+
+        yaml_event_delete(&event);
+    }
+}
+
+
+void parse_process_net(yaml_parser_t* parser, struct ProcessNetwork* net) {
+    yaml_event_t event;
+
+    char* key = NULL;
+
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        } 
+
+        switch (event.type)
+        {
+            case YAML_SCALAR_EVENT:
+                if(key == NULL){
+                    key = strdup((char*)event.data.scalar.value);
+                } 
+                break;
+
+            case YAML_SEQUENCE_START_EVENT:
+                if( key == NULL ){
+                    break;
+                } else if ( strcmp(key, "ports") == 0 ){
+                    parse_pnet_ports(parser, net); 
+                }
+                break;
+
+            case YAML_MAPPING_END_EVENT:
+                yaml_event_delete(&event);
+                return;
+            
+            default:
+                break;
+        }
+
+        yaml_event_delete(&event);
+    }
+
+}
+
+void parse_pnet_ports(yaml_parser_t* parser, struct ProcessNetwork* net) {
+    yaml_event_t event;
+
+    char* key = NULL;
+    int nports = 0;
+    struct PortMap* pmap[MAX_PORT_MAPS];
+    memset(pmap, 0, sizeof(pmap));
+
+    struct PortMapping* port_mapping = net->pm;
+
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        }
+
+        switch (event.type)
+        {
+            case YAML_MAPPING_START_EVENT:
+                /* parse_pnet_port_map */
+                struct PortMap *portmap = calloc(1, sizeof(struct PortMap));
+                parse_pnet_port_map(parser, portmap); 
+                nports = nports + 1;
+                pmap[nports-1] = portmap;
+                break;
+
+
+            case YAML_SEQUENCE_END_EVENT:
+                /* code */
+                net->pm->nports = nports;
+                net->pm->pmap = (struct PortMap**)calloc(nports, sizeof(struct PortMap*));
+                for(int p=0; p< nports; p++){
+                    net->pm->pmap[p] = pmap[p];
+                }
+                yaml_event_delete(&event);
+                return;
+            
+            default:
+                break;
+        }
+
+        yaml_event_delete(&event);
+
+    }
+}
+
+
+void parse_pnet_port_map(yaml_parser_t* parser, struct PortMap* pm){
+    yaml_event_t event;
+
+    char* key = NULL;
+
+
+    while(1) {
+        if (!yaml_parser_parse(parser, &event)) {
+            fprintf(stderr, "parser error: %d\n", parser->error);
+            break;
+        }
+
+        switch (event.type)
+        {
+            case YAML_SCALAR_EVENT:
+                /* code */
+                if(key == NULL) {
+                    key = strdup((char*)event.data.scalar.value); 
+                } else {
+                    if( strcmp(key, "hostPort") == 0 ) {
+                        pm->HostPort = strdup((char*)event.data.scalar.value); 
+                    } else if ( strcmp(key, "procPort") == 0 ) {
+                        pm->ProcPort = strdup((char*)event.data.scalar.value); 
+                    }
+                    free(key);
+                    key = NULL;
+                }
+                break;
+
+            case YAML_MAPPING_END_EVENT:
+                /* code */
+                if ( key != NULL ) {
+                    free(key);
+                    key = NULL;
+                }
+                yaml_event_delete(&event);
+                return;
+            
             default:
                 break;
         }
