@@ -520,9 +520,13 @@ void parse_process_net(yaml_parser_t* parser, struct ProcessNetwork* net) {
             case YAML_SEQUENCE_START_EVENT:
                 if( key == NULL ){
                     break;
-                } else if ( strcmp(key, "ports") == 0 ){
-                    net->pm = (struct PortMapping*)calloc(1, sizeof(struct PortMapping));
-                    parse_pnet_ports(parser, net); 
+                } else {
+                    if ( strcmp(key, "ports") == 0 ){
+                        net->pm = (struct PortMapping*)calloc(1, sizeof(struct PortMapping));
+                        parse_pnet_ports(parser, net); 
+                    }
+                    free(key);
+                    key = NULL;
                 }
                 break;
 
