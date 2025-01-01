@@ -73,6 +73,7 @@ void free_network_port_mapping(struct PortMapping* pm) {
         free(pm->pmap[p]);
     }
     free(pm->pmap);
+    free(pm);
 }
 
 void free_process_network(struct ProcessNetwork* net) {
@@ -520,6 +521,7 @@ void parse_process_net(yaml_parser_t* parser, struct ProcessNetwork* net) {
                 if( key == NULL ){
                     break;
                 } else if ( strcmp(key, "ports") == 0 ){
+                    net->pm = (struct PortMapping*)calloc(1, sizeof(struct PortMapping));
                     parse_pnet_ports(parser, net); 
                 }
                 break;
