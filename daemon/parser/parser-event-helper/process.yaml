@@ -21,6 +21,7 @@ env:
     LC_ALL: en_US.UTF-8
     PATH: /bin:/sbin:/usr/bin:/usr/sbin
     TERM: xterm-256color
+    PS1: "[namespace] > "
 network:
     ports:
         - hostPort: 8020

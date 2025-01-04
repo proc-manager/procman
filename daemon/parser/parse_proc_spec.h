@@ -68,6 +68,8 @@ struct Process {
 
     // params from outside the yaml 
     int fd[2];
+    char* Stack; // the allocated stack - must be freed
+    char* Rootfs; // pointer to rootfs 
 };
 
 void parse_process_yaml(char* filepath, struct Process* process);
