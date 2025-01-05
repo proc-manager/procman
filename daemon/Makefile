@@ -26,10 +26,10 @@ TARGET = program
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-    $(CC) $(OBJ) -o $@
+	$(CC) $(OBJ) -o $@
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)
