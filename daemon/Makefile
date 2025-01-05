@@ -11,6 +11,7 @@ TARGET := $(BUILD_DIR)/program
 # Source and Object files
 SRC := $(wildcard $(SRC_DIR)/*.c src/main.c)
 OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) $(OBJ_DIR)/main.o
+HEADERS := $(wildcard $(LIB_DIR)/*.h)
 
 # Default target
 all: $(TARGET)
@@ -23,11 +24,11 @@ $(TARGET): $(OBJ)
 # Rule to compile source files into object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< $(HEADERS) -o $@
 
 $(OBJ_DIR)/main.o: src/main.c
 	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< $(HEADERS) -o $@
 
 # Clean target
 clean:
