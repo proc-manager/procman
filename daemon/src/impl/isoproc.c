@@ -2,6 +2,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
@@ -78,11 +79,20 @@ void prepare_mntns(struct Process* proc) {
 
 
 void overwrite_env(struct Process* proc) {
-    clearenv();
+
+    if (proc == NULL || proc->Env == NULL) {
+        return;
+    }
+
+    if ( clearenv() ) {
+        graceful_exit(proc, "error clearenv", 1);
+    }
 
     struct ProcessEnv* env = proc->Env;
     for(int i=0; i< env->count; i++) {
-        setenv(env->env[i]->Key, env->env[i]->Val, 1);
+        if( setenv(env->env[i]->Key, env->env[i]->Val, 1) ) {
+            graceful_exit(proc, "error setenv", 1);
+        }
     }
     
 }
