@@ -10,8 +10,8 @@
 #include <sys/wait.h>
 
 // custom 
-#include "lib/isoproc.h"
-#include "lib/parse_proc_spec.h"
+#include "isoproc.h"
+#include "parse_proc_spec.h"
 
 
 
