@@ -3,7 +3,7 @@
 
 #include <yaml.h>
 
-#include "process.h"
+#include "lib/process.h"
 
 void parse_process_yaml(char* filepath, struct Process* process);
 void parse_image(yaml_parser_t* parser, struct Image* image);

@@ -1,6 +1,6 @@
 # Variables
 CC := gcc
-CFLAGS := -Wall -Wextra -I./src/lib
+CFLAGS := -Wall -Wextra -I./src
 LDFLAGS := 
 SRC_DIR := src/impl
 LIB_DIR := src/lib

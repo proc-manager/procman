@@ -9,10 +9,10 @@
 #include<sched.h>
 #include<sys/syscall.h>
 
-#include "helper.h"
-#include "process.h"
-#include "isoproc.h"
-#include "parse_proc_spec.h"
+#include "lib/helper.h"
+#include "lib/process.h"
+#include "lib/isoproc.h"
+#include "lib/parse_proc_spec.h"
 
 
 void start_process(char* process_yaml_loc, struct Process* p) {
