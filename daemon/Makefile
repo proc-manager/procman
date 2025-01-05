@@ -1,38 +1,40 @@
-# Variables
-CC := gcc
-CFLAGS := -Wall -Wextra -I./src
-LDFLAGS := 
-SRC_DIR := src/impl
-LIB_DIR := src/lib
-BUILD_DIR := build
-OBJ_DIR := $(BUILD_DIR)/obj
-TARGET := $(BUILD_DIR)/program
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -Wextra -g
+LDFLAGS = 
 
-# Source and Object files
-SRC := $(wildcard $(SRC_DIR)/*.c src/main.c)
-OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) $(OBJ_DIR)/main.o
-HEADERS := $(wildcard $(LIB_DIR)/*.h)
+# Directories
+SRC_DIR = src
+IMPL_DIR = $(SRC_DIR)/impl
+LIB_DIR = $(SRC_DIR)/lib
+EXAMPLES_DIR = examples/parser-event-helper
 
-# Default target
-all: $(TARGET)
+# Source files
+SRC_MAIN = $(SRC_DIR)/main.c
+IMPL_SRC = $(wildcard $(IMPL_DIR)/*.c)
+EXAMPLE_MAIN = $(EXAMPLES_DIR)/main.c
+OBJECTS = $(IMPL_SRC:.c=.o)
 
-# Rule to build the target
-$(TARGET): $(OBJ)
-	mkdir -p $(BUILD_DIR)
-	$(CC) $(LDFLAGS) $^ -o $@
+# Headers
+HEADERS = $(wildcard $(LIB_DIR)/*.h)
 
-# Rule to compile source files into object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< $(HEADERS) -o $@
+# Output binaries
+TARGET = daemon
+EXAMPLE_TARGET = parser-event-helper
 
-$(OBJ_DIR)/main.o: src/main.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< $(HEADERS) -o $@
-
-# Clean target
-clean:
-	rm -rf $(BUILD_DIR)
-
-# Phony targets
+# Rules
 .PHONY: all clean
+
+all: $(TARGET) $(EXAMPLE_TARGET)
+
+$(TARGET): $(SRC_MAIN) $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(EXAMPLE_TARGET): $(EXAMPLE_MAIN) $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(IMPL_DIR)/*.o $(TARGET) $(EXAMPLE_TARGET)
