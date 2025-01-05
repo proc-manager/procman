@@ -9,7 +9,7 @@
 #include<sys/syscall.h>
 
 #include "parser/parse_proc_spec.h"
-#include "isoproc.h"
+#include "isoproc/isoproc.h"
 
 #define STACKSIZE (1024*1024)
 

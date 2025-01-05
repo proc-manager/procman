@@ -8,8 +8,9 @@
 #include <sys/wait.h>
 
 // custom 
-#include "parse_proc_spec.h"
 #include "isoproc.h"
+#include "parser/parse_proc_spec.h"
+
 
 
 void graceful_exit(struct Process* proc, char* msg, int exit_code) {
