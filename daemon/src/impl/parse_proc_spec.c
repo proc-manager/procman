@@ -188,6 +188,7 @@ void free_process_rootfs(struct Process* proc) {
 void free_process(struct Process* process) {
     free(process->Id);
     free(process->Name);
+    free(process->ContextDir);
     free_image(process->Image);
     free_process_job(process->Job);
     free_process_env(process->Env);
@@ -251,6 +252,8 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     } else if ( strcmp(key, "pid") == 0 ) {
                         process->Pid = atoi((char*)event.data.scalar.value);
                         // printf("key: %s, val: %d\n", key, process->Pid);
+                    } else if ( strcmp(key, "contextDir") == 0 ) {
+                        process->ContextDir = strdup((char*)event.data.scalar.value);
                     } else if ( strcmp(key, "image") == 0 ) {
                         break;
                     } else if ( strcmp(key, "job") == 0 ) {
