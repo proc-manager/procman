@@ -10,7 +10,7 @@
 #include<sys/syscall.h>
 
 #include "lib/helper.h"
-#include "lib/process.h"
+#include "process.h"
 #include "lib/isoproc.h"
 #include "lib/parse_proc_spec.h"
 
