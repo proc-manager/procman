@@ -2,7 +2,7 @@
 CC = gcc
 
 # Compiler flags
-CFLAGS = -Iparser
+CFLAGS = -Iparser -Iisoproc
 
 # Libraries
 LIBS = -lyaml
