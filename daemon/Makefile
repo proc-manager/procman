@@ -18,7 +18,7 @@ SRC = $(MAIN_SRC) $(ISOPROC_SRC) $(PARSER_SRC)
 OBJ = $(SRC:.c=.o)
 
 # Executable name
-TARGET = program
+TARGET = procman
 
 # Rules
 .PHONY: all clean
