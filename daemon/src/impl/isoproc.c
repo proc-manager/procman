@@ -5,6 +5,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/mount.h>
 #include <sys/wait.h>
@@ -12,6 +13,7 @@
 // custom 
 #include "lib/isoproc.h"
 #include "lib/process.h"
+#include "lib/helper.h"
 #include "lib/parse_proc_spec.h"
 
 
@@ -25,6 +27,7 @@ int isoproc(void* p) {
 
     prepare_mntns(process);
 
+    return 0;
 }
 
 
@@ -67,7 +70,7 @@ void prepare_mntns(struct Process* proc) {
 void overwrite_env(struct Process* proc) {
     clearenv();
 
-    struct ProcessEnv* env;
+    struct ProcessEnv* env = proc->Env;
     for(int i=0; i< env->count; i++) {
         setenv(env->env[i]->Key, env->env[i]->Val, 1);
     }

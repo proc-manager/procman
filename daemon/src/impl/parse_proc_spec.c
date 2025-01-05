@@ -3,6 +3,7 @@
 #include <string.h>
 #include <yaml.h>
 
+#include "lib/helper.h"
 #include "lib/process.h"
 #include "lib/parse_proc_spec.h"
 
@@ -293,6 +294,9 @@ void parse_process_yaml(char* filepath, struct Process* process) {
                     process->Network = net;
                 }
                 break;
+
+            default:
+                break;
         }
         yaml_event_delete(&event);
     }
@@ -365,6 +369,9 @@ void parse_image(yaml_parser_t* parser, struct Image* image) {
                 yaml_event_delete(&event);
                 printf("mapping end event\n");
                 return; 
+
+            default:
+                break;
         }
     }
     if (key != NULL){
@@ -445,7 +452,6 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
 
     job->argc = 0;
     int argc = 0;
-    char* val = NULL;
     char* args[MAX_JOB_CMD_ARGS];
     memset(args, 0, sizeof(args));
 
@@ -607,7 +613,6 @@ void parse_process_net(yaml_parser_t* parser, struct ProcessNetwork* net) {
 void parse_pnet_ports(yaml_parser_t* parser, struct ProcessNetwork* net) {
     yaml_event_t event;
 
-    char* key = NULL;
     int nports = 0;
     struct PortMap* pmap[MAX_PORT_MAPS];
     memset(pmap, 0, sizeof(pmap));
@@ -633,10 +638,10 @@ void parse_pnet_ports(yaml_parser_t* parser, struct ProcessNetwork* net) {
 
             case YAML_SEQUENCE_END_EVENT:
                 /* code */
-                net->pm->nports = nports;
-                net->pm->pmap = (struct PortMap**)calloc(nports, sizeof(struct PortMap*));
+                port_mapping->nports = nports;
+                port_mapping->pmap = (struct PortMap**)calloc(nports, sizeof(struct PortMap*));
                 for(int p=0; p< nports; p++){
-                    net->pm->pmap[p] = pmap[p];
+                    port_mapping->pmap[p] = pmap[p];
                 }
                 yaml_event_delete(&event);
                 return;
