@@ -8,8 +8,8 @@
 #include<sched.h>
 #include<sys/syscall.h>
 
-#include "parser/parse_proc_spec.h"
-#include "isoproc/isoproc.h"
+#include "parse_proc_spec.h"
+#include "isoproc.h"
 
 #define STACKSIZE (1024*1024)
 
@@ -33,10 +33,8 @@ void start_process(char* process_yaml_loc, struct Process* p) {
         exit(EXIT_FAILURE);
     }
 
-
     p->Pid = pid;
     p->Stack = cmd_stack;
-
 }
 
 

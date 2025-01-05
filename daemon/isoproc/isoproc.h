@@ -6,6 +6,6 @@
 int isoproc(void *p);
 
 
-int prepare_mntns(struct Process* proc);
+void prepare_mntns(struct Process* proc);
 
 #endif // ISOLATED_PROCESS_H

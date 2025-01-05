@@ -70,6 +70,7 @@ struct Process {
     int fd[2];
     char* Stack; // the allocated stack - must be freed
     char* Rootfs; // pointer to rootfs 
+    int ExitStatus; // exit status
 };
 
 void parse_process_yaml(char* filepath, struct Process* process);

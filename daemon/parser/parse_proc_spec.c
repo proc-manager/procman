@@ -472,11 +472,12 @@ void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job) {
             case YAML_SEQUENCE_END_EVENT:
                 printf("sequence delete\n");
                 job->argc = argc;
-                char** argsptr = (char**)calloc(argc, sizeof(char*));
+                char** argsptr = (char**)calloc(argc+1, sizeof(char*));
                 if(argc > 0){
                     for(int c=0; c < argc; c++){
                         argsptr[c] = args[c];
                     }
+                    argsptr[argc] = NULL;
                     job->args = argsptr;
                     job->command = strdup(args[0]);
                 }
