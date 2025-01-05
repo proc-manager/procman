@@ -14,7 +14,7 @@ ISOPROC_SRC = $(wildcard $(ISOPROC_DIR)/*.c)
 PARSER_SRC = $(wildcard $(PARSER_DIR)/*.c)
 MAIN_SRC = $(SRC_DIR)/main.c
 
-SRC = $(MAIN_SRC) $(ISOPROC_SRC) $(PARSER_SRC)
+SRC = $(ISOPROC_SRC) $(PARSER_SRC)
 
 # Object files
 OBJ = $(SRC:.c=.o)
