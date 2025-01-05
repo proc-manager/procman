@@ -8,7 +8,7 @@ CFLAGS = -Iparser -Iisoproc
 LIBS = -lyaml
 
 # Source files
-SRCS = main.c parser/parse_proc_spec.c isoproc/isoproc.h isoproc/helper.h
+SRCS = main.c parser/parse_proc_spec.c isoproc/isoproc.h 
 
 # Object files
 OBJS = $(SRCS:.c=.o)
