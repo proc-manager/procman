@@ -1,39 +1,37 @@
-# Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Wextra -g
+# Variables
+CC := gcc
+CFLAGS := -Wall -Wextra -I./src/lib
+LDFLAGS := 
+SRC_DIR := src/impl
+LIB_DIR := src/lib
+BUILD_DIR := build
+OBJ_DIR := $(BUILD_DIR)/obj
+TARGET := $(BUILD_DIR)/program
 
-# Directories
-SRC_DIR = .
-ISOPROC_DIR = $(SRC_DIR)/isoproc
-PARSER_DIR = $(SRC_DIR)/parser
-
-# Sources and objects
-SRCS = $(SRC_DIR)/main.c \
-       $(ISOPROC_DIR)/isoproc.c \
-       $(PARSER_DIR)/parse_proc_spec.c
-
-OBJS = $(SRCS:.c=.o)
-
-# Output binary
-TARGET = procmand
+# Source and Object files
+SRC := $(wildcard $(SRC_DIR)/*.c src/main.c)
+OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) $(OBJ_DIR)/main.o
 
 # Default target
 all: $(TARGET)
 
-# Build the target binary
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+# Rule to build the target
+$(TARGET): $(OBJ)
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(LDFLAGS) $^ -o $@
 
-# Build object files
-%.o: %.c
+# Rule to compile source files into object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean build files
+$(OBJ_DIR)/main.o: src/main.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean target
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD_DIR)
 
-# Run
-run: $(TARGET)
-	./$(TARGET)
-
-.PHONY: all clean run
+# Phony targets
+.PHONY: all clean

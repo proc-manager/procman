@@ -1,12 +1,10 @@
-#ifndef PARSE_PROC_SPEC_H
-#define PARSE_PROC_SPEC_H
+#ifndef PROCESS_H
+#define PROCESS_H
 
 #define MAX_JOB_CMD_ARGS 20
 #define MAX_PROC_ENV 50
 #define MAX_PORT_MAPS 30
-
-#include <sys/types.h>
-#include <yaml.h>
+#define STACKSIZE (1024*1024)
 
 struct Env {
     char* Key;
@@ -73,13 +71,7 @@ struct Process {
     int ExitStatus; // exit status
 };
 
-void parse_process_yaml(char* filepath, struct Process* process);
-void parse_image(yaml_parser_t* parser, struct Image* image);
-void parse_process_job(yaml_parser_t* parser, struct ProcessJob* job);
-void parse_job_command(yaml_parser_t* parser, struct ProcessJobCommand* job);
-void parse_process_env(yaml_parser_t* parser, struct ProcessEnv* penv);
-void parse_process_net(yaml_parser_t* parser, struct ProcessNetwork* net);
-void parse_pnet_ports(yaml_parser_t* parser, struct ProcessNetwork* net);
-void parse_pnet_port_map(yaml_parser_t* parser, struct PortMap* pm);
+
 void free_process(struct Process* process);
-#endif // PARSE_PROC_SPEC_H
+
+#endif

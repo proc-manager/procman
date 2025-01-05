@@ -1,8 +1,5 @@
 #define _GNU_SOURCE
 
-#include "isoproc/isoproc.h"
-#include "parser/parse_proc_spec.h"
-
 #include<signal.h>
 #include<stdlib.h>
 #include<stdio.h>
@@ -12,8 +9,10 @@
 #include<sched.h>
 #include<sys/syscall.h>
 
-#define STACKSIZE (1024*1024)
-
+#include "lib/helper.h"
+#include "lib/process.h"
+#include "lib/isoproc.h"
+#include "lib/parse_proc_spec.h"
 
 
 void start_process(char* process_yaml_loc, struct Process* p) {

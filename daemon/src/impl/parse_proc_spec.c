@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <yaml.h>
-#include "parse_proc_spec.h"
+
+#include "lib/process.h"
+#include "lib/parse_proc_spec.h"
 
 
 void print_parsed_image(struct Image* image) {

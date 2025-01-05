@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 
-#include "isoproc.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +10,8 @@
 #include <sys/wait.h>
 
 // custom 
-#include "parser/parse_proc_spec.h"
+#include "lib/isoproc.h"
+#include "lib/parse_proc_spec.h"
 
 
 

@@ -7,6 +7,7 @@
         "stdlib.h": "c",
         "mount.h": "c",
         "helper.h": "c",
-        "isoproc.h": "c"
+        "isoproc.h": "c",
+        "process.h": "c"
     }
 }
