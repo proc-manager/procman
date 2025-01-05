@@ -41,7 +41,7 @@ void start_process(char* process_yaml_loc, struct Process* p) {
 int main() {
 
     struct Process* p = (struct Process*)calloc(1, sizeof(struct Process));
-
+    
     printf("starting process\n");
     start_process("process.yaml", p);
     printf("starting process\n");

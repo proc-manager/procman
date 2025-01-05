@@ -80,6 +80,8 @@ void prepare_mntns(struct Process* proc) {
 
 void overwrite_env(struct Process* proc) {
 
+    printf("overwriting env\n");
+
     if (proc == NULL || proc->Env == NULL) {
         return;
     }
@@ -94,6 +96,8 @@ void overwrite_env(struct Process* proc) {
             graceful_exit(proc, "error setenv", 1);
         }
     }
+
+    printf("env overwrite success");
     
 }
 
