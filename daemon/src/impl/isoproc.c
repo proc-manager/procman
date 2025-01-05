@@ -15,13 +15,6 @@
 #include "lib/parse_proc_spec.h"
 
 
-
-void graceful_exit(struct Process* proc, char* msg, int exit_code) {
-    free_process(proc);
-    perror(msg);
-    exit(exit_code);
-}
-
 int isoproc(void* p) {
     
     struct Process* process = (struct Process*)p;
