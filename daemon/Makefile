@@ -27,8 +27,6 @@ $(EXEC): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up
+# Clean target
 clean:
 	rm -f $(OBJS) $(EXEC)
-
-.PHONY: all clean
