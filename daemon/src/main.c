@@ -42,7 +42,7 @@ int main() {
 
     struct Process* p = (struct Process*)calloc(1, sizeof(struct Process));
     printf("parsing yaml\n");
-    // parse_process_yaml("process.yaml", p);
+    parse_process_yaml("process.yaml", p);
     start_process("process.yaml", p);
     printf("done parsing yaml\n");
     free_process(p);

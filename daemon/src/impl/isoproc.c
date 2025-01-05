@@ -35,6 +35,8 @@ void prepare_mntns(struct Process* proc) {
     char buffer[150];
     char* mntfs;
 
+    printf("preparing mntns\n");
+
     if ( sprintf(buffer, "%s/%s", proc->ContextDir, "rootfs") < 0 ) {
         graceful_exit(proc, "error copying rootfs path to buf", 1);
     }
@@ -45,24 +47,31 @@ void prepare_mntns(struct Process* proc) {
     if ( mount(proc->Rootfs, mntfs, "ext4", MS_BIND, "")) {
         graceful_exit(proc, "error mounting", 1);
     } 
-
+    printf("mounted rootfs\n");
 
     if ( chdir(mntfs) ) {
         graceful_exit(proc, "error chdir", 1);
     }
+    printf("changed dir\n");
 
     const char* put_old = ".put_old";
     if( mkdir(put_old, 0777) && errno != EEXIST ) {
         graceful_exit(proc, "error creating the putold directory", 1);
     }
+    printf("created .put_old\n");
 
     if ( syscall(SYS_pivot_root, ".", put_old) ) {  
         graceful_exit(proc, "error pivoting root", 1);
     }
+    printf("performed sys_pivot\n");
 
     if ( chdir("/") ) {
         graceful_exit(proc, "error chdir to root", 1);
     }
+    printf("chdir to root successful\n");
+
+    
+    printf("proc initial setup done\n");
 
 }
 
@@ -78,6 +87,7 @@ void overwrite_env(struct Process* proc) {
 }
 
 void execute_job(struct Process* proc) {
+
     overwrite_env(proc);
 
     struct ProcessJob* job = proc->Job;
