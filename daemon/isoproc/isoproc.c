@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 
 // custom 
-#include "parser/parse_proc_spec.h"
+#include "parse_proc_spec.h"
 #include "isoproc.h"
 #include "helper.h"
 
