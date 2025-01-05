@@ -1,32 +1,35 @@
-# Compiler
+# Compiler and flags
 CC = gcc
+CFLAGS = -Wall -Wextra -Iisoproc -Iparser
 
-# Compiler flags
-CFLAGS = -Iparser -Iisoproc
-
-# Libraries
-LIBS = -lyaml
+# Directories
+SRC_DIR = .
+ISOPROC_DIR = isoproc
+PARSER_DIR = parser
 
 # Source files
-SRCS = main.c parser/parse_proc_spec.c isoproc/isoproc.c
+ISOPROC_SRC = $(wildcard $(ISOPROC_DIR)/*.c)
+PARSER_SRC = $(wildcard $(PARSER_DIR)/*.c)
+MAIN_SRC = $(SRC_DIR)/main.c
+
+SRC = $(MAIN_SRC) $(ISOPROC_SRC) $(PARSER_SRC)
 
 # Object files
-OBJS = $(SRCS:.c=.o)
+OBJ = $(SRC:.c=.o)
 
 # Executable name
-EXEC = procman
+TARGET = program
 
-# Default target
-all: $(EXEC)
+# Rules
+.PHONY: all clean
 
-# Build target
-$(EXEC): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+all: $(TARGET)
 
-# Compile .c files to .o files
+$(TARGET): $(OBJ)
+	$(CC) $(OBJ) -o $@
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean target
 clean:
-	rm -f $(OBJS) $(EXEC)
+	rm -f $(OBJ) $(TARGET)
