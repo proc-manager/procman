@@ -11,6 +11,7 @@
 
 // custom 
 #include "lib/isoproc.h"
+#include "lib/process.h"
 #include "lib/parse_proc_spec.h"
 
 
