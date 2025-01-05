@@ -8,7 +8,7 @@ CFLAGS = -Iparser -Iisoproc
 LIBS = -lyaml
 
 # Source files
-SRCS = main.c parser/parse_proc_spec.c isoproc/isoproc.h 
+SRCS = main.c parser/parse_proc_spec.c isoproc/isoproc.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -19,13 +19,13 @@ EXEC = procman
 # Default target
 all: $(EXEC)
 
-# Link the executable
+# Build target
 $(EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-# Compile source files to object files
+# Compile .c files to .o files
 %.o: %.c
-	$(CC) $(CFLAGS) -g -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up
 clean:
