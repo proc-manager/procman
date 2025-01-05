@@ -86,9 +86,9 @@ void overwrite_env(struct Process* proc) {
         return;
     }
 
-    if ( clearenv() ) {
-        graceful_exit(proc, "error clearenv", 1);
-    }
+    // if ( clearenv() ) {
+    //     graceful_exit(proc, "error clearenv", 1);
+    // }
 
     struct ProcessEnv* env = proc->Env;
     for(int i=0; i< env->count; i++) {
@@ -103,7 +103,6 @@ void overwrite_env(struct Process* proc) {
 
 void execute_job(struct Process* proc) {
 
-    overwrite_env(proc);
 
     struct ProcessJob* job = proc->Job;
     struct ProcessJobCommand* cmd = job->Command;
@@ -111,11 +110,13 @@ void execute_job(struct Process* proc) {
 
     pid_t pid = fork();
 
+
     if (pid < 0) {
         // fork failed  
         graceful_exit(proc, "fork failed", 1);
     } else if ( pid == 0 ) {
-        // parent process
+        // child process
+        overwrite_env(proc);
         if ( execvp(cmd->command, cmd->args) == -1 ) {
             graceful_exit(proc, "execvp failed", 1);
         }
