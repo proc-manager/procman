@@ -62,7 +62,7 @@ void prepare_mntns(struct Process* proc) {
     }
     printf("created .put_old\n");
 
-    if ( syscall(SYS_pivot_root, ".", put_old) ) {  
+    if ( syscall(SYS_pivot_root, ".", put_old) == -1 ) {  
         graceful_exit(proc, "error pivoting root", 1);
     }
     printf("performed sys_pivot\n");
