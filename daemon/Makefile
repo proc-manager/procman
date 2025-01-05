@@ -1,6 +1,8 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -I. -Iisoproc -Iparser
+LIBS = -lyaml
+
 
 # Directories
 SRC_DIR = .
@@ -26,7 +28,7 @@ TARGET = procman
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $@
+	$(CC) $(OBJ) -o $@ $^ $(LIBS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
