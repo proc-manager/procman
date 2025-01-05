@@ -1,37 +1,39 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -I. -Iisoproc -Iparser
-LIBS = -lyaml
-
+CFLAGS = -Wall -Wextra -g
 
 # Directories
 SRC_DIR = .
-ISOPROC_DIR = isoproc
-PARSER_DIR = parser
+ISOPROC_DIR = $(SRC_DIR)/isoproc
+PARSER_DIR = $(SRC_DIR)/parser
 
-# Source files
-ISOPROC_SRC = $(wildcard $(ISOPROC_DIR)/*.c)
-PARSER_SRC = $(wildcard $(PARSER_DIR)/*.c)
-MAIN_SRC = $(SRC_DIR)/main.c
+# Sources and objects
+SRCS = $(SRC_DIR)/main.c \
+       $(ISOPROC_DIR)/isoproc.c \
+       $(PARSER_DIR)/parse_proc_spec.c
 
-SRC = $(ISOPROC_SRC) $(PARSER_SRC)
+OBJS = $(SRCS:.c=.o)
 
-# Object files
-OBJ = $(SRC:.c=.o)
+# Output binary
+TARGET = procmand
 
-# Executable name
-TARGET = procman
-
-# Rules
-.PHONY: all clean
-
+# Default target
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $@ $^ $(LIBS)
+# Build the target binary
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
+# Build object files
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-	
+
+# Clean build files
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJS) $(TARGET)
+
+# Run
+run: $(TARGET)
+	./$(TARGET)
+
+.PHONY: all clean run
