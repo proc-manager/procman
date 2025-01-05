@@ -39,7 +39,7 @@ void print_process_env(struct ProcessEnv* penv) {
     struct Env** envs = penv->env;
     for(int e=0; e < penv->count; e++){
         if( penv->env[e] != NULL ){
-            printf("key: %s, val: %s\n", penv->env[e]->Key, penv->env[e]->Val);
+            printf("key: %s, val: %s\n", envs[e]->Key, envs[e]->Val);
         }
     }
     printf("\n-------ENV-----\n");   
