@@ -41,10 +41,11 @@ void start_process(char* process_yaml_loc, struct Process* p) {
 int main() {
 
     struct Process* p = (struct Process*)calloc(1, sizeof(struct Process));
-    printf("parsing yaml\n");
-    parse_process_yaml("process.yaml", p);
+
+    printf("starting process\n");
     start_process("process.yaml", p);
-    printf("done parsing yaml\n");
+    printf("starting process\n");
+
     free_process(p);
 
     return 0;

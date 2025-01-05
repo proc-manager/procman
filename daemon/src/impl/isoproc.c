@@ -26,6 +26,7 @@ int isoproc(void* p) {
     }
 
     prepare_mntns(process);
+    execute_job(process);
 
     return 0;
 }
