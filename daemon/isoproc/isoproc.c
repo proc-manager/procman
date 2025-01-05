@@ -1,4 +1,7 @@
 #define _GNU_SOURCE
+
+#include "isoproc.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -8,7 +11,6 @@
 #include <sys/wait.h>
 
 // custom 
-#include "isoproc.h"
 #include "parser/parse_proc_spec.h"
 
 
