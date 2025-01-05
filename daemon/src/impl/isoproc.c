@@ -54,7 +54,7 @@ void prepare_mntns(struct Process* proc) {
     if ( chdir(mntfs) ) {
         graceful_exit(proc, "error chdir", 1);
     }
-    printf("changed dir\n");
+    printf("changed dir to: %s\n", mntfs);
 
     const char* put_old = ".put_old";
     if( mkdir(put_old, 0777) && errno != EEXIST ) {
