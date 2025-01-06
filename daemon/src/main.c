@@ -7,6 +7,7 @@
 #include<linux/unistd.h>
 #include<linux/sched.h>
 #include<sched.h>
+#include<sys/wait.h>
 #include<sys/syscall.h>
 
 #include "lib/helper.h"
@@ -35,6 +36,12 @@ void start_process(char* process_yaml_loc, struct Process* p) {
 
     p->Pid = pid;
     p->Stack = cmd_stack;
+
+    if( waitpid(pid, NULL, 0) == -1 ) {
+        graceful_exit(p, "waitpid failed", 1);
+    }
+
+    graceful_exit(p, "success", 0);
 }
 
 
