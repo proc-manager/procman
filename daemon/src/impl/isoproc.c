@@ -124,7 +124,7 @@ void execute_job(struct Process* proc) {
         // parent process
         int status;
         while(1) {
-            pid_t result = waitpid(pid, &status, WNOHANG);
+            pid_t result = waitpid(pid, &status, 0);
 
             if (result == 0) {
                 sleep(1);
