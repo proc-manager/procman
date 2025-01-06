@@ -113,6 +113,7 @@ func getJobDefaultEnvs() ProcessEnv {
 	m["LANG"] = "en_US.UTF-8"
 	m["LANGUAGE"] = "en_US:en"
 	m["LC_ALL"] = "en_US.UTF-8"
+	m["PS1"] = "[namepace] >"
 	return m
 }
 
