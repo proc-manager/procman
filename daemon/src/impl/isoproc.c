@@ -108,6 +108,7 @@ void execute_job(struct Process* proc) {
     struct ProcessJobCommand* cmd = job->Command;
     printf("executing job: %s\n", job->Name);
 
+    overwrite_env(proc);
     if ( execvp(cmd->command, cmd->args) == -1 ) {
         graceful_exit(proc, "execvp failed", 1);
     }
