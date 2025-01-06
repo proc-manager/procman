@@ -108,36 +108,43 @@ void execute_job(struct Process* proc) {
     struct ProcessJobCommand* cmd = job->Command;
     printf("executing job: %s\n", job->Name);
 
-    pid_t pid = fork();
-
-
-    if (pid < 0) {
-        // fork failed  
-        graceful_exit(proc, "fork failed", 1);
-    } else if ( pid == 0 ) {
-        // child process
-        overwrite_env(proc);
-        if ( execvp(cmd->command, cmd->args) == -1 ) {
-            graceful_exit(proc, "execvp failed", 1);
-        }
-    } else {
-        // parent process
-        int status;
-        while(1) {
-            pid_t result = waitpid(pid, &status, 0);
-
-            if (result == 0) {
-                sleep(1);
-            } else if (result == pid) {
-                if ( WIFEXITED(status) ) {
-                    proc->ExitStatus = WIFEXITED(status);
-                } else {
-                    proc->ExitStatus = status;
-                }
-                break;
-            } else {
-                graceful_exit(proc, "waitpid failed", 1);
-            }
-        }
+    if ( execvp(cmd->command, cmd->args) == -1 ) {
+        graceful_exit(proc, "execvp failed", 1);
     }
+
+    graceful_exit(proc, "success", 0);
+
+    // pid_t pid = fork();
+
+    // if (pid < 0) {
+    //     // fork failed  
+    //     graceful_exit(proc, "fork failed", 1);
+    // } else if ( pid == 0 ) {
+    //     // child process
+    //     overwrite_env(proc);
+    //     if ( execvp(cmd->command, cmd->args) == -1 ) {
+    //         graceful_exit(proc, "execvp failed", 1);
+    //     }
+    //     return;
+    // } else {
+    //     // parent process
+    //     int status;
+    //     while(1) {
+    //         pid_t result = waitpid(pid, &status, 0);
+
+    //         if (result == 0) {
+    //             sleep(1);
+    //         } else if (result == pid) {
+    //             if ( WIFEXITED(status) ) {
+    //                 proc->ExitStatus = WIFEXITED(status);
+    //             } else {
+    //                 proc->ExitStatus = status;
+    //             }
+    //             break;
+    //         } else {
+    //             graceful_exit(proc, "waitpid failed", 1);
+    //         }
+    //     }
+    // }
+    // graceful_exit(proc, "success", 0);
 }
