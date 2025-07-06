@@ -9,10 +9,9 @@ import (
 )
 
 func BuildImage(
-	name string, 
-	tag string, 
-	context_dir string
-) (*Image, *ImageError) {
+	name string,
+	tag string,
+	context_dir string) (*Image, *ImageError) {
 
 	_logger := common.GetLogger()
 
@@ -31,14 +30,13 @@ func BuildImage(
 		return img, &ImageError{Message: "image already exists"}
 	}
 
-	_logger.Info().Msgf("building image %v:%v using context dir %v", name, 
-						tag, context_dir)
+	_logger.Info().Msgf("building image %v:%v using context dir %v", name, tag, context_dir)
 
 	abs_context_dir, err := filepath.Abs(context_dir)
 	if err != nil {
 		_logger.Error().Msgf("error getting abs path: %v", err)
 		return nil, &ImageError{
-			Message: fmt.Sprintf("error getting abs path: %v", err)
+			Message: fmt.Sprintf("error getting abs path: %v", err),
 		}
 	}
 
@@ -46,7 +44,7 @@ func BuildImage(
 	if errbuild != nil {
 		_logger.Error().Msgf("error building image: %v", errbuild)
 		return nil, &ImageError{
-			Message: fmt.Sprintf("error building: %v", errbuild)
+			Message: fmt.Sprintf("error building: %v", errbuild),
 		}
 	}
 	if res == nil {
