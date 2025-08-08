@@ -1,5 +1,5 @@
 # procman
-Trying to mimic the functionalities of docker. 
+Writing my own container runtime. 
 
 
 ## Design Considerations 
